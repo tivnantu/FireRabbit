@@ -1,5 +1,6 @@
 package cn.tivnan.firerabbit
 
+import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -34,6 +35,11 @@ class MainActivity : AppCompatActivity() {
         }
         buttonHome.setOnClickListener {
             webView!!.loadUrl(WEB_URL)
+        }
+
+        toBookmark.setOnClickListener{
+            val intent = Intent(this, BookmarkActivity::class.java)
+            startActivity(intent)
         }
     }
 
