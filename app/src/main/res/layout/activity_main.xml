@@ -57,5 +57,23 @@
             android:background="@color/white"/>
 
 
+        <Button
+            android:id="@+id/buttonAddBookMark"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="@color/white"
+            android:text="add bookmark" />
+
+        <Button
+            android:id="@+id/buttonBookMark"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="@color/white"
+            android:text="bookmark" />
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,9 @@
 package cn.tivnan.firerabbit
 
+import android.app.AlertDialog
+import android.app.Dialog
+import android.content.ContentValues
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -9,7 +13,11 @@ import android.view.View
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import cn.tivnan.firerabbit.dao.BookmarkDataHelper
 import kotlinx.android.synthetic.main.activity_main.*
+
 
 class MainActivity : AppCompatActivity() {
     private var webView: WebView? = null
@@ -36,12 +44,44 @@ class MainActivity : AppCompatActivity() {
         buttonHome.setOnClickListener {
             webView!!.loadUrl(WEB_URL)
         }
+        buttonAddBookMark.setOnClickListener {
+            addBookmarkDialog(webView!!.title, webView!!.url)
+        }
 
-        toBookmark.setOnClickListener{
-            val intent = Intent(this, BookmarkActivity::class.java)
+        buttonBookMark.setOnClickListener {
+            val intent = Intent(this@MainActivity, Boookmark::class.java)
             startActivity(intent)
         }
     }
+
+    fun addBookmarkDialog(title: String, url: String) {
+        val normalDialog = AlertDialog.Builder(this)
+        normalDialog.setTitle(title)
+        normalDialog.setMessage(url)
+        normalDialog.setCancelable(true)
+        normalDialog.setPositiveButton("确定"
+        ) { dialog, which ->
+            addBookmark(title,url)
+        }
+        normalDialog.setNegativeButton("关闭",null)
+        normalDialog.show();
+    }
+
+
+    //数据库添加数据(书签表)
+    fun addBookmark(title: String, url: String) {
+        //第二个参数是数据库名
+        val dbHelper = BookmarkDataHelper(this@MainActivity, "bookmark", null, 1);
+        val db = dbHelper.writableDatabase
+        val value = ContentValues().apply {
+            put("title", title)
+            put("url", url)
+        }
+        //insert（）方法中第一个参数是表名，第二个参数是表示给表中未指定数据的自动赋值为NULL。第三个参数是一个ContentValues对象
+        db.insert("bookmark", null, value)
+        Toast.makeText(this, "添加成功", Toast.LENGTH_SHORT).show()
+    }
+
 
     fun initWebView() {
         webView = findViewById(R.id.webview)
