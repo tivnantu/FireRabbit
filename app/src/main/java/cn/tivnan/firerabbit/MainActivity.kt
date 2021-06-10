@@ -45,16 +45,38 @@ class MainActivity : AppCompatActivity() {
             webView!!.loadUrl(WEB_URL)
         }
         buttonAddBookMark.setOnClickListener {
-            addBookmarkDialog(webView!!.title, webView!!.url)
+            // Log.d("webviewurl", "onCreate: "+webView!!.url)
+            if (isExistBoomark(webView!!.url)) {
+                Log.d("bookamrks", "onCreate: addd")
+                addBookmarkDialog(webView!!.title, webView!!.url)
+            } else {
+                val normalDialog = AlertDialog.Builder(this)
+                normalDialog.setTitle("书签已存在")
+                normalDialog.setMessage(webView!!.title + " :\n " + webView!!.url)
+                normalDialog.setCancelable(true)
+                normalDialog.setNegativeButton("关闭", null)
+                normalDialog.show();
+            }
         }
-
         buttonBookMark.setOnClickListener {
 //            val intent1 = Intent()
 //            intent1.setClass(this,MainActivity::class.java)
             val intent = Intent(this, BookmarkActivity::class.java)
-            intent.putExtra("aaaa","aaaaa")
             startActivity(intent)
         }
+    }
+
+    fun isExistBoomark(url: String): Boolean {
+        val dbHelper = BookmarkDataHelper(this@MainActivity, "bookmark", null, 1);
+        val db = dbHelper.writableDatabase
+        // val rawQuery = db.rawQuery("select count(*) from bookmark where url = '" + url+ "'", null)
+
+        val rawQuery = db.rawQuery("select * from bookmark where url = ? ", arrayOf(url))
+        return rawQuery.count<1
+        // Log.d("rawQuery", "isExistBoomark: " + rawQuery.columnCount)
+        // val count = rawQuery.columnCount
+        // rawQuery.close()
+        // return count < 1
     }
 
     fun addBookmarkDialog(title: String, url: String) {
@@ -62,11 +84,12 @@ class MainActivity : AppCompatActivity() {
         normalDialog.setTitle(title)
         normalDialog.setMessage(url)
         normalDialog.setCancelable(true)
-        normalDialog.setPositiveButton("确定"
+        normalDialog.setPositiveButton(
+            "确定"
         ) { dialog, which ->
-            addBookmark(title,url)
+            addBookmark(title, url)
         }
-        normalDialog.setNegativeButton("关闭",null)
+        normalDialog.setNegativeButton("关闭", null)
         normalDialog.show();
     }
 
