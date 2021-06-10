@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="30dp"
+    android:layout_margin="5dp">
 
     <ImageView
         android:id="@+id/bookmark_item_img"
         android:src="@drawable/ic_launcher_foreground"
         android:layout_width="20dp"
-        android:layout_height="20dp"/>
+        android:layout_height="20dp"
+        android:layout_gravity="center_vertical"/>
     <TextView
         android:id="@+id/bookmark_item_desc"
         android:text="This is bookmark description"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="10dp"/>
 </LinearLayout>

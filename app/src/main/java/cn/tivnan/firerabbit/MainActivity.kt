@@ -6,8 +6,8 @@ import android.content.ContentValues
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.webkit.WebSettings
@@ -49,7 +49,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         buttonBookMark.setOnClickListener {
-            val intent = Intent(this@MainActivity, Boookmark::class.java)
+//            val intent1 = Intent()
+//            intent1.setClass(this,MainActivity::class.java)
+            val intent = Intent(this, BookmarkActivity::class.java)
+            intent.putExtra("aaaa","aaaaa")
             startActivity(intent)
         }
     }
