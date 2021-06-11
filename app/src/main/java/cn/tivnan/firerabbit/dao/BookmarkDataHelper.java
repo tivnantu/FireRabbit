@@ -8,6 +8,8 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import cn.tivnan.firerabbit.Bookmark;
+
 public class BookmarkDataHelper extends SQLiteOpenHelper {
     //书签表
     public static final String CREATE_bookmarkDB = "create table bookmark(" +
@@ -34,4 +36,5 @@ public class BookmarkDataHelper extends SQLiteOpenHelper {
         db.execSQL("drop table if exists bookmark");
         onCreate(db);
     }
+
 }

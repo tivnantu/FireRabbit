@@ -1,19 +1,19 @@
 package cn.tivnan.firerabbit;
 
 public class Bookmark {
-    private int imgId;//img地址
-    private String desc;//书签的名字
+    private String name;//书签的名字
+    private String url;//书签的url
 
-    public Bookmark(int imgId, String desc) {
-        this.imgId = imgId;
-        this.desc = desc;
+    public Bookmark(String name, String url) {
+        this.name = name;
+        this.url = url;
     }
 
-    public int getImgId() {
-        return imgId;
+    public String getName() {
+        return name;
     }
 
-    public String getDesc() {
-        return desc;
+    public String getUrl() {
+        return url;
     }
 }

@@ -17,16 +17,26 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
 
     private List<Bookmark> mBookmarkList;
 
+    private OnMyItemClickListener listener;
+    public void setOnMyItemClickListener(OnMyItemClickListener listener) {
+        this.listener = listener;
+    }
+    public interface OnMyItemClickListener {
+        void myClick(View v, int pos);
+        void mLongClick(View v, int pos);
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView bookmarkImg;
-        TextView bookmarkDesc;
+        TextView bookmarkName;
+        View view;
 
         public ViewHolder(@NonNull @NotNull View itemView) {//传入RecycleerView子项最外层布局，通过fid获取布局中的实例
             super(itemView);
-            bookmarkImg = (ImageView)itemView.findViewById(R.id.bookmark_item_img);
-            bookmarkDesc = (TextView)itemView.findViewById(R.id.bookmark_item_desc);
+            bookmarkName = itemView.findViewById(R.id.bookmark_item_name);
+            view = itemView;
         }
     }
+
     //Adapter的构造函数，获取需要展示的数据源
     public BookmarkAdapter(List<Bookmark> bookmarkList) {
         mBookmarkList = bookmarkList;
@@ -39,7 +49,7 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
     public BookmarkAdapter.ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup viewGroup, int i) {
         //将bookmark_item布局加载进来
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.bookmark_item, viewGroup, false);
-        ViewHolder holder = new ViewHolder(view);
+        final ViewHolder holder = new ViewHolder(view);
         return holder;
     }
 
@@ -47,13 +57,23 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
     //对RecyclerView子项的数据进行赋值
     public void onBindViewHolder(@NonNull @NotNull BookmarkAdapter.ViewHolder viewHolder, int i) {
         Bookmark bookmark = mBookmarkList.get(i);
-//        viewHolder.bookmarkImg.setImageResource(bookmark.getImgId());
-        viewHolder.bookmarkDesc.setText(bookmark.getDesc());
+        viewHolder.bookmarkName.setText(bookmark.getName());
+
+        //监听点击事件
+        if (listener != null) {
+            viewHolder.view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.myClick(v, i);
+                }
+            });
+
+        }
     }
 
     @Override
     public int getItemCount() {
         return mBookmarkList.size();
     }
-
 }
+
