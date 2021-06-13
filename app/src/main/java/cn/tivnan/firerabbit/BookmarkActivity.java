@@ -6,19 +6,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import cn.tivnan.firerabbit.dao.BookmarkDataHelper;
+import cn.tivnan.firerabbit.model.BookmarkDataHelper;
 
 public class BookmarkActivity extends AppCompatActivity {
 
