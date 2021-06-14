@@ -15,14 +15,18 @@
         android:theme="@style/Theme.FireRabbit"
         tools:replace="android:appComponentFactory">
         <activity
-            android:name=".BookmarkActivity"
-            android:label="书签"></activity>
-        <activity android:name=".MainAcitivity">
+            android:name=".view.BookmarkEditActivity"
+            android:label="编辑书签"
+            ></activity>
+        <activity
+            android:name=".view.BookmarkActivity"
+            android:label="书签" />
+        <activity
+            android:name=".MainAcitivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
     </application>
 

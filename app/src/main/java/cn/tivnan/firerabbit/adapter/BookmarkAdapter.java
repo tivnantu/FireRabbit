@@ -1,9 +1,9 @@
-package cn.tivnan.firerabbit;
+package cn.tivnan.firerabbit.adapter;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,6 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+
+import cn.tivnan.firerabbit.MainAcitivity;
+import cn.tivnan.firerabbit.R;
+import cn.tivnan.firerabbit.entity.Bookmark;
 
 public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHolder> {
 
@@ -65,6 +69,13 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
                 @Override
                 public void onClick(View v) {
                     listener.myClick(v, i);
+                }
+            });
+            viewHolder.view.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    listener.mLongClick(v, i);
+                    return true;
                 }
             });
 

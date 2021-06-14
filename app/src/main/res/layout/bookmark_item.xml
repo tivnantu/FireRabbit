@@ -4,7 +4,7 @@
     android:layout_height="30dp"
     android:layout_margin="5dp">
 
-    <TextView
+    <ImageView
         android:id="@+id/bookmark_item_img"
         android:src="@drawable/ic_launcher_foreground"
         android:layout_width="20dp"

@@ -1,4 +1,4 @@
-package cn.tivnan.firerabbit;
+package cn.tivnan.firerabbit.entity;
 
 public class Bookmark {
     private String name;//书签的名字

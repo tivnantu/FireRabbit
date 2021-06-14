@@ -55,4 +55,17 @@ public class BookmarkDataHelper extends SQLiteOpenHelper {
         return getWritableDatabase().insert("bookmark", null, contentValues);
     }
 
+    //查询所有书签
+    public Cursor queryAllBookmarks() {
+        return getWritableDatabase().query("bookmark",null,null,null,null,null,null,null);
+    }
+
+    //修改书签
+    public void updateBookmark(String newName, String newUrl, String oldUrl) {
+        ContentValues values = new ContentValues();
+        values.put("title", newName);
+        values.put("url",newUrl);
+        getWritableDatabase().update("bookmark", values, "url = ?", new String[]{oldUrl});
+    }
+
 }

@@ -1,12 +1,9 @@
 package cn.tivnan.firerabbit;
 
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebSettings;
@@ -18,9 +15,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.Objects;
-
 import cn.tivnan.firerabbit.controller.BookmarkController;
+import cn.tivnan.firerabbit.view.BookmarkActivity;
 
 public class MainAcitivity extends AppCompatActivity {
 
