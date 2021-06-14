@@ -18,7 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import cn.tivnan.firerabbit.controller.BookmarkController;
 import cn.tivnan.firerabbit.view.BookmarkActivity;
 
-public class MainAcitivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
 
     //webView所加载的主页链接
@@ -63,12 +63,12 @@ public class MainAcitivity extends AppCompatActivity {
         findViewById(R.id.buttonAddBookMark).setOnClickListener(v -> {
             String url = webView.getUrl();
             String title = webView.getTitle();
-            addBookmarkDialog(MainAcitivity.this, title, url);
+            addBookmarkDialog(MainActivity.this, title, url);
         });
 
         //书签按钮，跳转到书签界面
         findViewById(R.id.buttonBookMark).setOnClickListener(v -> {
-            Intent intent = new Intent(MainAcitivity.this, BookmarkActivity.class);
+            Intent intent = new Intent(MainActivity.this, BookmarkActivity.class);
             startActivity(intent);
         });
     }
