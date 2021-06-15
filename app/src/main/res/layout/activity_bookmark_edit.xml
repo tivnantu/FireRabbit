@@ -2,23 +2,27 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:backgroundTint="@color/white"
     android:orientation="vertical">
 
     <EditText
         android:id="@+id/bookmark_name"
-        android:text="name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"/>
+        android:layout_marginLeft="10dp"
+        android:text="书签名" />
+
     <EditText
         android:id="@+id/bookmark_url"
-        android:text="url"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"/>
+        android:layout_marginLeft="10dp"
+        android:text="书签网址" />
+
     <Button
         android:id="@+id/confirm_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="完成"/>
+        android:backgroundTint="#2196F3"
+        android:text="完成" />
 </LinearLayout>
