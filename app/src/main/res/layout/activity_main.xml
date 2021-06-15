@@ -33,7 +33,6 @@
             android:gravity="center"
             android:stateListAnimator="@null"
             app:icon="@drawable/back"
-            app:iconPadding="0dp"
             app:iconTint="#646464" />
 
         <Button
@@ -44,8 +43,8 @@
             android:backgroundTint="@color/white"
             android:gravity="center"
             android:stateListAnimator="@null"
+            android:text="forward"
             app:icon="@drawable/forward"
-            app:iconPadding="0dp"
             app:iconTint="#646464" />
 
         <Button
@@ -57,32 +56,29 @@
             android:gravity="center"
             android:stateListAnimator="@null"
             app:icon="@drawable/main"
-            app:iconPadding="0dp"
             app:iconTint="#646464" />
 
-        <Button
-            android:id="@+id/buttonAddBookMark"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:backgroundTint="@color/white"
-            android:gravity="center"
-            android:stateListAnimator="@null"
-            app:icon="@drawable/addmark"
-            app:iconPadding="0dp"
-            app:iconTint="#646464" />
+<!--        <Button-->
+<!--            android:id="@+id/buttonAddBookMark"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_weight="1"-->
+<!--            android:backgroundTint="@color/white"-->
+<!--            android:gravity="center"-->
+<!--            android:stateListAnimator="@null"-->
+<!--            app:icon="@drawable/addmark"-->
+<!--            app:iconTint="#646464" />-->
 
-        <Button
-            android:id="@+id/buttonBookMark"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:backgroundTint="@color/white"
-            android:gravity="center"
-            android:stateListAnimator="@null"
-            app:icon="@drawable/bookmark"
-            app:iconPadding="0dp"
-            app:iconTint="#646464" />
+<!--        <Button-->
+<!--            android:id="@+id/buttonBookMark"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_weight="1"-->
+<!--            android:backgroundTint="@color/white"-->
+<!--            android:gravity="center"-->
+<!--            android:stateListAnimator="@null"-->
+<!--            app:icon="@drawable/bookmark"-->
+<!--            app:iconTint="#646464" />-->
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
