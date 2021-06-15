@@ -3,6 +3,7 @@ package cn.tivnan.firerabbit;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.jetbrains.annotations.NotNull;
 
 import cn.tivnan.firerabbit.controller.BookmarkController;
+import cn.tivnan.firerabbit.controller.HistoryController;
 import cn.tivnan.firerabbit.view.BookmarkActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -75,6 +77,9 @@ public class MainActivity extends AppCompatActivity {
 
 
         WebViewClient webClient = new WebViewClient() {
+
+            boolean if_load;
+
             // override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
             //     // return false
             // }
@@ -89,6 +94,25 @@ public class MainActivity extends AppCompatActivity {
 
                 }
                 return true;
+            }
+
+            //页面完成即加入历史记录
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+
+                if (if_load) {
+                    new HistoryController(MainActivity.this).addBookmark(view.copyBackForwardList().getCurrentItem().getTitle(), view.copyBackForwardList().getCurrentItem().getUrl());
+                    if_load = false;
+                }
+            }
+
+            //页面开始
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+
+                if_load = true;
             }
         };
 
