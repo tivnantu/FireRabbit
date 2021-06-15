@@ -68,4 +68,8 @@ public class BookmarkController {
         bookmarkDBHelper.updateBookmark(newName, newUrl, oldUrl);
     }
 
+    public void removeBookmark(String url){
+        bookmarkDBHelper.deleteBookmark(url);
+    }
+
 }

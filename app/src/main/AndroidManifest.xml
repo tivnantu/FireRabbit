@@ -22,7 +22,7 @@
             android:name=".view.BookmarkActivity"
             android:label="书签" />
         <activity
-            android:name=".veiw.MainActivity"
+            android:name=".MainActivity"
             android:label="FireRabbit">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

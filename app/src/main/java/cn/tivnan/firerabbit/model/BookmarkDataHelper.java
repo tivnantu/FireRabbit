@@ -68,4 +68,8 @@ public class BookmarkDataHelper extends SQLiteOpenHelper {
         getWritableDatabase().update("bookmark", values, "url = ?", new String[]{oldUrl});
     }
 
+    public void  deleteBookmark(String url) {
+        getWritableDatabase().delete("bookmark", "url = ?", new String[]{url});
+    }
+
 }

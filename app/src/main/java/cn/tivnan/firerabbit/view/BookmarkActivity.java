@@ -3,6 +3,7 @@ package cn.tivnan.firerabbit.view;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,7 +17,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.tivnan.firerabbit.MainAcitivity;
+import cn.tivnan.firerabbit.MainActivity;
 import cn.tivnan.firerabbit.adapter.BookmarkAdapter;
 import cn.tivnan.firerabbit.R;
 import cn.tivnan.firerabbit.controller.BookmarkController;
@@ -49,18 +50,42 @@ public class BookmarkActivity extends AppCompatActivity {
             //单击跳转
             @Override
             public void myClick(View v, int pos) {
-                Intent intent = new Intent(v.getContext(), MainAcitivity.class);
+                Intent intent = new Intent(v.getContext(), MainActivity.class);
                 intent.putExtra("url", bookmarkList.get(pos).getUrl());
                 startActivity(intent);
             }
-            //长按跳转至编辑页面
+
+            //长按书签弹出popupMenu，可选择删除或编辑书签
             @Override
             public void mLongClick(View v, int pos) {
-                Intent intent = new Intent(v.getContext(), BookmarkEditActivity.class);
-                intent.putExtra("url", bookmarkList.get(pos).getUrl());
-                intent.putExtra("name", bookmarkList.get(pos).getName());
-                intent.putExtra("pos", pos);
-                startActivityForResult(intent, 1);
+                PopupMenu popupMenu = new PopupMenu(v.getContext(),v);
+                popupMenu.getMenuInflater().inflate(R.menu.menu_bookmark, popupMenu.getMenu());
+                //弹出式菜单的菜单项点击事件
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()){
+                                //点击删除
+                            case R.id.deleteItem:
+                                bookmarkController.removeBookmark(bookmarkList.get(pos).getUrl());
+                                bookmarkList = bookmarkController.getBookmarkList();
+                                bookmarkAdapter.notifyDataSetChanged();
+                                break;
+                                //点击编辑跳转至编辑页面
+                            case R.id.editItem:
+                                Intent intent = new Intent(v.getContext(), BookmarkEditActivity.class);
+                                intent.putExtra("url", bookmarkList.get(pos).getUrl());
+                                intent.putExtra("name", bookmarkList.get(pos).getName());
+                                intent.putExtra("pos", pos);
+                                startActivityForResult(intent, 1);
+                                break;
+                            default:
+                        }
+                        return true;
+                    }
+                });
+                popupMenu.show();
+
             }
         });
 
@@ -104,12 +129,11 @@ public class BookmarkActivity extends AppCompatActivity {
 //                    Log.d("testPos", String.valueOf(data.getIntExtra("pos", 0)));
 //                    Log.d("testP", String.valueOf(p));
 
-                    //更改书签后，刷新书签列表的页面
+//                    更改书签后，刷新书签列表的页面
                     //bookmarkList = bookmarkController.getBookmarkList();//为什么不能通过重新加载bookmarkList的方式更新呢？？？？
                     bookmarkList.set(p, new Bookmark(data.getStringExtra("newName"), data.getStringExtra("newUrl")));//必须更新bookmarkList才能在界面上更新
                     bookmarkAdapter.notifyDataSetChanged();
 //                    initBookmarks();//这样会及时更新但会导致再次点击item时无响应的情况
-
                 }
                 break;
             default:

@@ -13,7 +13,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import cn.tivnan.firerabbit.MainAcitivity;
 import cn.tivnan.firerabbit.R;
 import cn.tivnan.firerabbit.entity.Bookmark;
 
