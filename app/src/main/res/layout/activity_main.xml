@@ -17,68 +17,224 @@
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="200dp"
         android:backgroundTint="@color/white"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <Button
-            android:id="@+id/buttonBack"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:backgroundTint="@color/white"
-            android:gravity="center"
-            android:stateListAnimator="@null"
-            app:icon="@drawable/back"
-            app:iconTint="#646464" />
+        <LinearLayout
+            android:id="@+id/menu3"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
-        <Button
-            android:id="@+id/buttonForeward"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:backgroundTint="@color/white"
-            android:gravity="center"
-            android:stateListAnimator="@null"
-            android:text="forward"
-            app:icon="@drawable/forward"
-            app:iconTint="#646464" />
+            <Button
+                android:id="@+id/buttonAddMark"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:backgroundTint="@color/white"
+                android:gravity="center"
+                android:stateListAnimator="@null"
+                app:icon="@drawable/addmark"
+                app:iconTint="#646464" />
 
-        <Button
-            android:id="@+id/buttonHome"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:backgroundTint="@color/white"
-            android:gravity="center"
-            android:stateListAnimator="@null"
-            app:icon="@drawable/main"
-            app:iconTint="#646464" />
+            <Button
+                android:id="@+id/buttonMarks"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:backgroundTint="@color/white"
+                android:gravity="center"
+                android:stateListAnimator="@null"
+                app:icon="@drawable/bookmark"
+                app:iconTint="#646464" />
 
-<!--        <Button-->
-<!--            android:id="@+id/buttonAddBookMark"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:layout_weight="1"-->
-<!--            android:backgroundTint="@color/white"-->
-<!--            android:gravity="center"-->
-<!--            android:stateListAnimator="@null"-->
-<!--            app:icon="@drawable/addmark"-->
-<!--            app:iconTint="#646464" />-->
+            <Button
+                android:id="@+id/buttonHistory"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:backgroundTint="@color/white"
+                android:gravity="center"
+                android:stateListAnimator="@null"
+                app:icon="@drawable/history"
+                app:iconTint="#646464" />
 
-<!--        <Button-->
-<!--            android:id="@+id/buttonBookMark"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:layout_weight="1"-->
-<!--            android:backgroundTint="@color/white"-->
-<!--            android:gravity="center"-->
-<!--            android:stateListAnimator="@null"-->
-<!--            app:icon="@drawable/bookmark"-->
-<!--            app:iconTint="#646464" />-->
+            <Button
+                android:id="@+id/buttonDownload"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:backgroundTint="@color/white"
+                android:gravity="center"
+                android:stateListAnimator="@null"
+                app:icon="@drawable/download"
+                app:iconTint="#646464" />
 
+            <Button
+                android:id="@+id/buttonInvisibleMod"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:backgroundTint="@color/white"
+                android:gravity="center"
+                android:stateListAnimator="@null"
+                app:icon="@drawable/invisible"
+                app:iconTint="#646464" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/menu2"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <Button
+                android:id="@+id/buttonShare"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:backgroundTint="@color/white"
+                android:gravity="center"
+                android:stateListAnimator="@null"
+                app:icon="@drawable/share"
+                app:iconTint="#646464" />
+
+            <Button
+                android:id="@+id/buttonNightMod"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:backgroundTint="@color/white"
+                android:gravity="center"
+                android:stateListAnimator="@null"
+                app:icon="@drawable/nightmod"
+                app:iconTint="#646464" />
+
+            <Button
+                android:id="@+id/buttonNothing"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:backgroundTint="@color/white"
+                android:gravity="center"
+                android:stateListAnimator="@null"
+                app:iconTint="#646464" />
+            <!--app:icon="@drawable/main"-->
+
+
+            <Button
+                android:id="@+id/buttonQuit"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:backgroundTint="@color/white"
+                android:gravity="center"
+                android:stateListAnimator="@null"
+                app:icon="@drawable/quit"
+                app:iconTint="#646464" />
+
+            <Button
+                android:id="@+id/buttonSetting"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:backgroundTint="@color/white"
+                android:gravity="center"
+                android:stateListAnimator="@null"
+                app:icon="@drawable/setting"
+                app:iconTint="#646464" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/menu1"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <Button
+                android:id="@+id/buttonBack"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:backgroundTint="@color/white"
+                android:gravity="center"
+                android:stateListAnimator="@null"
+                app:icon="@drawable/back"
+                app:iconTint="#646464" />
+
+            <Button
+                android:id="@+id/buttonForward"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:backgroundTint="@color/white"
+                android:gravity="center"
+                android:stateListAnimator="@null"
+                app:icon="@drawable/forward"
+                app:iconTint="#646464" />
+
+            <Button
+                android:id="@+id/buttonHome"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:backgroundTint="@color/white"
+                android:gravity="center"
+                android:stateListAnimator="@null"
+                app:icon="@drawable/main"
+                app:iconTint="#646464" />
+
+            <Button
+                android:id="@+id/buttonPages"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:backgroundTint="@color/white"
+                android:gravity="center"
+                android:stateListAnimator="@null"
+                app:icon="@drawable/addmark"
+                app:iconTint="#646464" />
+
+            <Button
+                android:id="@+id/buttonMore"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:backgroundTint="@color/white"
+                android:gravity="center"
+                android:stateListAnimator="@null"
+                app:icon="@drawable/more"
+                app:iconTint="#646464" />
+
+            <Button
+                android:id="@+id/buttonLess"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:backgroundTint="@color/white"
+                android:gravity="center"
+                android:stateListAnimator="@null"
+                app:icon="@drawable/less"
+                app:iconTint="#646464" />
+
+        </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

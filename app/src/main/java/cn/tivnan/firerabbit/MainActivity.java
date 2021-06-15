@@ -6,15 +6,14 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -38,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
 
         initView();
@@ -62,15 +62,66 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //前进按钮，前进到前一个网页
-        findViewById(R.id.buttonForeward).setOnClickListener(v -> {
+        findViewById(R.id.buttonForward).setOnClickListener(v -> {
             //没有前一个网页则无反应
             if (webView.canGoForward()) {
                 webView.goForward();  //前进前一个页面
             }
         });
 
+        findViewById(R.id.buttonAddMark).setOnClickListener( v ->{
+            //增加书签按钮，把当前页面制作成书签存储起来
+            String url = webView.getUrl();
+            String title = webView.getTitle();
+            addBookmarkDialog(MainActivity.this, title, url);
+        });
+
+        findViewById(R.id.buttonMarks).setOnClickListener( v ->{
+            //书签按钮，跳转到书签界面
+            Intent intent = new Intent();
+            intent.setClass(MainActivity.this, BookmarkActivity.class);
+            startActivityForResult(intent, 1);
+        });
+
         //主页按钮，返回主页
         findViewById(R.id.buttonHome).setOnClickListener(v -> webView.loadUrl(HOME_URL));
+
+        findViewById(R.id.menu2).setVisibility(View.INVISIBLE);
+        findViewById(R.id.menu3).setVisibility(View.INVISIBLE);
+        findViewById(R.id.buttonLess).setVisibility(View.GONE);
+
+        findViewById(R.id.buttonMore).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {//实际处理button的click事件的方法
+
+                findViewById(R.id.buttonBack).setVisibility(View.INVISIBLE);
+                findViewById(R.id.buttonForward).setVisibility(View.INVISIBLE);
+                findViewById(R.id.buttonHome).setVisibility(View.INVISIBLE);
+                findViewById(R.id.buttonPages).setVisibility(View.INVISIBLE);
+                findViewById(R.id.menu2).setVisibility(View.VISIBLE);
+                findViewById(R.id.menu3).setVisibility(View.VISIBLE);
+                findViewById(R.id.buttonMore).setVisibility(View.GONE);
+                findViewById(R.id.buttonLess).setVisibility(View.VISIBLE);
+
+            }
+        });
+
+        findViewById(R.id.buttonLess).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {//实际处理button的click事件的方法
+
+                findViewById(R.id.menu3).setVisibility(View.INVISIBLE);
+                findViewById(R.id.menu2).setVisibility(View.INVISIBLE);
+                findViewById(R.id.buttonBack).setVisibility(View.VISIBLE);
+                findViewById(R.id.buttonForward).setVisibility(View.VISIBLE);
+                findViewById(R.id.buttonHome).setVisibility(View.VISIBLE);
+                findViewById(R.id.buttonPages).setVisibility(View.VISIBLE);
+                findViewById(R.id.buttonLess).setVisibility(View.GONE);
+                findViewById(R.id.buttonMore).setVisibility(View.VISIBLE);
+
+            }
+        });
+
     }
 
     private void initWebView(WebView webView) {
@@ -173,37 +224,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * 菜单
-     *
-     * @param menu
-     * @return
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull @NotNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.bookmark:
-                //书签按钮，跳转到书签界面
-                Intent intent = new Intent();
-                intent.setClass(MainActivity.this, BookmarkActivity.class);
-                startActivityForResult(intent, 1);
-                break;
-            case R.id.addBookmark:
-                //增加书签按钮，把当前页面制作成书签存储起来
-                String url = webView.getUrl();
-                String title = webView.getTitle();
-                addBookmarkDialog(MainActivity.this, title, url);
-                break;
-        }
-        return true;
-    }
-
-    /**
      * 设置返回键
      * 如果页面可以继续后退则后退，否则退出应用
      *
@@ -239,4 +259,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
     }
+
+
 }
