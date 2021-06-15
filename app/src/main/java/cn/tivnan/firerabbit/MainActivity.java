@@ -7,15 +7,21 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import org.jetbrains.annotations.NotNull;
 
 import cn.tivnan.firerabbit.controller.BookmarkController;
 import cn.tivnan.firerabbit.view.BookmarkActivity;
@@ -63,20 +69,6 @@ public class MainActivity extends AppCompatActivity {
 
         //主页按钮，返回主页
         findViewById(R.id.buttonHome).setOnClickListener(v -> webView.loadUrl(HOME_URL));
-
-        //增加书签按钮，把当前页面制作成书签存储起来
-        findViewById(R.id.buttonAddBookMark).setOnClickListener(v -> {
-            String url = webView.getUrl();
-            String title = webView.getTitle();
-            addBookmarkDialog(MainActivity.this, title, url);
-        });
-
-        //书签按钮，跳转到书签界面
-        findViewById(R.id.buttonBookMark).setOnClickListener(v -> {
-            Intent intent = new Intent();
-            intent.setClass(MainActivity.this, BookmarkActivity.class);
-            startActivityForResult(intent, 1);
-        });
     }
 
     private void initWebView(WebView webView) {
@@ -156,6 +148,36 @@ public class MainActivity extends AppCompatActivity {
         normalDialog.show();
     }
 
+    /**
+     * 菜单
+     *
+     * @param menu
+     * @return
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull @NotNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.bookmark:
+                //书签按钮，跳转到书签界面
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this, BookmarkActivity.class);
+                startActivityForResult(intent, 1);
+                break;
+            case R.id.addBookmark:
+                //增加书签按钮，把当前页面制作成书签存储起来
+                String url = webView.getUrl();
+                String title = webView.getTitle();
+                addBookmarkDialog(MainActivity.this, title, url);
+                break;
+        }
+        return true;
+    }
 
     /**
      * 设置返回键
@@ -184,12 +206,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
         // super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode){
+        switch (requestCode) {
             case 1: //接受书签url并且返回
-                if(resultCode==RESULT_OK){
-                    String  url= data.getStringExtra("url");
+                if (resultCode == RESULT_OK) {
+                    String url = data.getStringExtra("url");
                     webView.loadUrl(url);
                 }
+                break;
         }
     }
 }
