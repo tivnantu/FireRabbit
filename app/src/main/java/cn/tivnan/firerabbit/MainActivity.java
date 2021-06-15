@@ -1,9 +1,11 @@
 package cn.tivnan.firerabbit;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebSettings;
@@ -23,13 +25,16 @@ public class MainActivity extends AppCompatActivity {
 
     //webView所加载的主页链接
     private final static String HOME_URL = "https://cn.bing.com";
+    private WebView webView;
 
     @Override
     protected void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         initView();
     }
+
 
     /**
      * 设置主界面各控件功能
@@ -37,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
 
         //核心的webView，网页内容在此呈现，打开App先加载主页
-        WebView webView = findViewById(R.id.webview);
+        webView = findViewById(R.id.webview);
         initWebView(webView);
 
         //返回按钮，返回后一个网页
@@ -68,8 +73,9 @@ public class MainActivity extends AppCompatActivity {
 
         //书签按钮，跳转到书签界面
         findViewById(R.id.buttonBookMark).setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, BookmarkActivity.class);
-            startActivity(intent);
+            Intent intent = new Intent();
+            intent.setClass(MainActivity.this, BookmarkActivity.class);
+            startActivityForResult(intent, 1);
         });
     }
 
@@ -172,5 +178,18 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return false;
+    }
+
+    @SuppressLint("MissingSuperCall")
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+        // super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case 1: //接受书签url并且返回
+                if(resultCode==RESULT_OK){
+                    String  url= data.getStringExtra("url");
+                    webView.loadUrl(url);
+                }
+        }
     }
 }

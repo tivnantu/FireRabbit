@@ -50,9 +50,13 @@ public class BookmarkActivity extends AppCompatActivity {
             //单击跳转
             @Override
             public void myClick(View v, int pos) {
-                Intent intent = new Intent(v.getContext(), MainActivity.class);
+                // Intent intent = new Intent(v.getContext(), MainActivity.class);
+                // intent.putExtra("url", bookmarkList.get(pos).getUrl());
+                // startActivity(intent);
+                Intent intent = new Intent();//没有任何参数（意图），只是用来传递数据
                 intent.putExtra("url", bookmarkList.get(pos).getUrl());
-                startActivity(intent);
+                setResult(RESULT_OK, intent);
+                finish();
             }
 
             //长按书签弹出popupMenu，可选择删除或编辑书签
