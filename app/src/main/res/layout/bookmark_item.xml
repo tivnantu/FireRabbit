@@ -10,7 +10,7 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_gravity="center_vertical"
-        android:src="@drawable/ic_launcher_foreground" />
+        android:src="@drawable/bookmark" />
 
     <TextView
         android:id="@+id/bookmark_item_name"

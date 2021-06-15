@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                 super.onPageFinished(view, url);
 
                 if (if_load) {
-                    new HistoryController(MainActivity.this).addBookmark(view.copyBackForwardList().getCurrentItem().getTitle(), view.copyBackForwardList().getCurrentItem().getUrl());
+                    new HistoryController(MainActivity.this).addHistory(view.copyBackForwardList().getCurrentItem().getTitle(), view.copyBackForwardList().getCurrentItem().getUrl());
                     if_load = false;
                 }
             }

@@ -7,13 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
-public class HistoryDataHelper extends SQLiteOpenHelper {
-
-    //创建书签sql
-    public static final String CREATE_historyDB = "create table history(" +
-            "id integer primary key autoincrement," +
-            "title text ," +
-            "url text)";
+public class HistoryDataHelper extends MyDataHelper {
 
     private Context mContext;
 
@@ -22,21 +16,10 @@ public class HistoryDataHelper extends SQLiteOpenHelper {
         mContext = context;
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        db.execSQL(CREATE_historyDB);
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("drop table if exists history");
-        onCreate(db);
-    }
-
     /**
      * 插入历史记录
      */
-    public long insertBookmark(ContentValues contentValues) {
+    public long insertHistory(ContentValues contentValues) {
         return getWritableDatabase().insert("history", null, contentValues);
     }
 }

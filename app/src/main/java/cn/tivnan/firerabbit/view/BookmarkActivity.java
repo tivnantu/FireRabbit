@@ -71,9 +71,9 @@ public class BookmarkActivity extends AppCompatActivity {
                         switch (item.getItemId()){
                                 //点击删除
                             case R.id.deleteItem:
-                                bookmarkController.removeBookmark(bookmarkList.get(pos).getUrl());
-                                bookmarkList = bookmarkController.getBookmarkList();
-                                bookmarkAdapter.notifyDataSetChanged();
+                                bookmarkController.removeBookmark(bookmarkList.get(pos).getUrl());//从数据库中删除
+                                bookmarkList.remove(pos);//别忘了更新bookList中的数据，不执行这一步的话adapter中的bookList不会更新的
+                                bookmarkAdapter.notifyItemRemoved(pos);//最后再通知adapter更新页面
                                 break;
                                 //点击编辑跳转至编辑页面
                             case R.id.editItem:

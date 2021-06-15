@@ -10,7 +10,7 @@ public class HistoryController {
     private final HistoryDataHelper historyDataHelper;
 
     public HistoryController(Context context) {
-        this.historyDataHelper =new HistoryDataHelper(context, "FireRabbit", null, 1);
+        this.historyDataHelper =new HistoryDataHelper(context, "FireRabbit", null, 1);//TODO
     }
 
     /**
@@ -19,11 +19,11 @@ public class HistoryController {
      * @param url
      * @return
      */
-    public Boolean addBookmark(String title, String url) {
+    public Boolean addHistory(String title, String url) {
             ContentValues values = new ContentValues();
             values.put("title", title);
             values.put("url", url);
-            return historyDataHelper.insertBookmark(values) > 1;
+            return historyDataHelper.insertHistory(values) > 1;
     }
 
 }

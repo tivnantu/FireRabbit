@@ -16,7 +16,7 @@ public class BookmarkController {
     private final BookmarkDataHelper bookmarkDBHelper;
 
     public BookmarkController(Context context) {
-        this.bookmarkDBHelper = new BookmarkDataHelper(context, "FireRabbit", null, 1);
+        this.bookmarkDBHelper = new BookmarkDataHelper(context, "FireRabbit", null, 1);//TODO
     }
 
     /**
@@ -67,7 +67,7 @@ public class BookmarkController {
     public void modifyBookmark(String newName, String newUrl, String oldUrl) {
         bookmarkDBHelper.updateBookmark(newName, newUrl, oldUrl);
     }
-
+    //删除书签
     public void removeBookmark(String url){
         bookmarkDBHelper.deleteBookmark(url);
     }
