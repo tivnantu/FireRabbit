@@ -7,9 +7,11 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -17,7 +19,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.tivnan.firerabbit.MainActivity;
 import cn.tivnan.firerabbit.adapter.BookmarkAdapter;
 import cn.tivnan.firerabbit.R;
 import cn.tivnan.firerabbit.controller.BookmarkController;
@@ -28,7 +29,7 @@ public class BookmarkActivity extends AppCompatActivity {
     private List<Bookmark> bookmarkList = new ArrayList<>();
     private BookmarkController bookmarkController;
     private BookmarkAdapter bookmarkAdapter;
-    private RecyclerView recyclerView;
+    private RecyclerView bookmarkRecycler;
     private LinearLayoutManager layoutManager;
 
     @Override
@@ -59,7 +60,7 @@ public class BookmarkActivity extends AppCompatActivity {
                 finish();
             }
 
-            //长按书签弹出popupMenu，可选择删除或编辑书签
+            //长按书签弹出popupMenu，可选择删除、编辑书签、复制链接、分享
             @Override
             public void mLongClick(View v, int pos) {
                 PopupMenu popupMenu = new PopupMenu(v.getContext(),v);
@@ -83,7 +84,22 @@ public class BookmarkActivity extends AppCompatActivity {
                                 intent.putExtra("pos", pos);
                                 startActivityForResult(intent, 1);
                                 break;
+                                //点击复制选中的书签
+                            case R.id.copyItemLink:
+                                    //获取剪贴板管理器
+                                    ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                                    // 创建普通字符型ClipData
+                                    ClipData mClipData = ClipData.newPlainText("urlCopied", bookmarkList.get(pos).getUrl());
+                                    // 将ClipData内容放到系统剪贴板里。
+                                    cm.setPrimaryClip(mClipData);
+                                    Toast.makeText(v.getContext(), "复制成功", Toast.LENGTH_SHORT).show();
+                                    break;
+                                //点击分享选中的书签
+                            case R.id.shareItem:
+
+                                break;
                             default:
+                                break;
                         }
                         return true;
                     }
@@ -105,16 +121,16 @@ public class BookmarkActivity extends AppCompatActivity {
 
     //加载书签页面
     private void initBookmarks(){
-        recyclerView = (RecyclerView)findViewById(R.id.bookmark_recycler_view);
+        bookmarkRecycler = (RecyclerView)findViewById(R.id.bookmark_recycler_view);
         layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
+        bookmarkRecycler.setLayoutManager(layoutManager);
 
         //读取书签列表
         bookmarkController = new BookmarkController(this);
         bookmarkList = bookmarkController.getBookmarkList();
 
         bookmarkAdapter = new BookmarkAdapter(bookmarkList);
-        recyclerView.setAdapter(bookmarkAdapter);
+        bookmarkRecycler.setAdapter(bookmarkAdapter);
     }
 
     //
