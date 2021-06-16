@@ -1,27 +1,31 @@
 package cn.tivnan.firerabbit;
 
 import android.annotation.SuppressLint;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.MenuItemCompat;
 
-import org.jetbrains.annotations.NotNull;
 
 import cn.tivnan.firerabbit.controller.BookmarkController;
 import cn.tivnan.firerabbit.controller.HistoryController;
@@ -37,12 +41,54 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().hide();
+        // getSupportActionBar().hide();
+
+        //FIXME label未取消
+        getSupportActionBar().setDisplayUseLogoEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         setContentView(R.layout.activity_main);
 
         initView();
     }
 
+    /**
+     * 顶部搜索栏
+     *
+     * @param menu 菜单
+     * @return
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_searchbar, menu);
+
+        SearchManager searchManager = (SearchManager)
+                getSystemService(Context.SEARCH_SERVICE);
+        MenuItem searchMenuItem = menu.findItem(R.id.search);
+        SearchView searchView = (SearchView) searchMenuItem.getActionView();
+
+        searchView.setSearchableInfo(searchManager.
+                getSearchableInfo(getComponentName()));
+        searchView.setSubmitButtonEnabled(true);
+
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Toast t = Toast.makeText(MainActivity.this, query, Toast.LENGTH_SHORT);
+                t.setGravity(Gravity.TOP, 0, 0);
+                t.show();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+        return true;
+    }
 
     /**
      * 设置主界面各控件功能
@@ -69,14 +115,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.buttonAddMark).setOnClickListener( v ->{
+        findViewById(R.id.buttonAddMark).setOnClickListener(v -> {
             //增加书签按钮，把当前页面制作成书签存储起来
             String url = webView.getUrl();
             String title = webView.getTitle();
             addBookmarkDialog(MainActivity.this, title, url);
         });
 
-        findViewById(R.id.buttonMarks).setOnClickListener( v ->{
+        findViewById(R.id.buttonMarks).setOnClickListener(v -> {
             //书签按钮，跳转到书签界面
             Intent intent = new Intent();
             intent.setClass(MainActivity.this, BookmarkActivity.class);
