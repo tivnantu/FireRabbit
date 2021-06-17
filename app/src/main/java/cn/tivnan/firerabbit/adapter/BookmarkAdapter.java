@@ -19,17 +19,10 @@ import cn.tivnan.firerabbit.entity.Bookmark;
 public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHolder> {
 
     private List<Bookmark> mBookmarkList;
-
     private OnMyItemClickListener listener;
-    public void setOnMyItemClickListener(OnMyItemClickListener listener) {
-        this.listener = listener;
-    }
-    public interface OnMyItemClickListener {
-        void myClick(View v, int pos);
-        void mLongClick(View v, int pos);
-    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+
         TextView bookmarkName;
         View view;
 
@@ -85,5 +78,14 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
     public int getItemCount() {
         return mBookmarkList.size();
     }
+
+    public void setOnMyItemClickListener(OnMyItemClickListener listener) {
+        this.listener = listener;
+    }
+    public interface OnMyItemClickListener {
+        void myClick(View v, int pos);
+        void mLongClick(View v, int pos);
+    }
 }
+
 

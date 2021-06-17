@@ -16,9 +16,12 @@
         android:theme="@style/Theme.FireRabbit"
         tools:replace="android:appComponentFactory">
         <activity
-            android:name=".view.BookmarkEditActivity"
-            android:label="编辑书签"
+            android:name=".view.HistoryActivity"
+            android:label="历史"
             ></activity>
+        <activity
+            android:name=".view.BookmarkEditActivity"
+            android:label="编辑书签" />
         <activity
             android:name=".view.BookmarkActivity"
             android:label="书签" />
@@ -27,9 +30,9 @@
             android:label="FireRabbit">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
     </application>
 

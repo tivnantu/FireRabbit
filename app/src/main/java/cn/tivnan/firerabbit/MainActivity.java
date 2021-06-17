@@ -26,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import cn.tivnan.firerabbit.controller.BookmarkController;
 import cn.tivnan.firerabbit.controller.HistoryController;
 import cn.tivnan.firerabbit.view.BookmarkActivity;
+import cn.tivnan.firerabbit.view.HistoryActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -83,6 +84,12 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(intent, 1);
         });
 
+        findViewById(R.id.buttonHistory).setOnClickListener(v -> {
+            //历史记录按钮
+            Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
+            startActivity(intent);
+        });
+
         //主页按钮，返回主页
         findViewById(R.id.buttonHome).setOnClickListener(v -> webView.loadUrl(HOME_URL));
 
@@ -125,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initWebView(WebView webView) {
-
 
         WebViewClient webClient = new WebViewClient() {
 

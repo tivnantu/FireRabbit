@@ -6,8 +6,8 @@
         android:title="删除">
     </item>
     <item
-        android:id="@+id/editItem"
-        android:title="编辑">
+        android:id="@+id/deleteAllItem"
+        android:title="清空历史">
     </item>
     <item
         android:id="@+id/copyItemLink"

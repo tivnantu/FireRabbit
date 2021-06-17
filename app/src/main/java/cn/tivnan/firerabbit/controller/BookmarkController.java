@@ -16,7 +16,7 @@ public class BookmarkController {
     private final BookmarkDataHelper bookmarkDBHelper;
 
     public BookmarkController(Context context) {
-        this.bookmarkDBHelper = new BookmarkDataHelper(context, "FireRabbit", null, 1);//TODO
+        this.bookmarkDBHelper = new BookmarkDataHelper(context, "FireRabbit", null, 1);
     }
 
     /**
