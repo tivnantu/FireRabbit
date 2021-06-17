@@ -1,0 +1,32 @@
+<html>
+
+    <head>
+        <title>欢迎使用FireRabbit</title>
+        <meta charset="utf-8" />
+    </head>
+
+    <body>
+        <div style = "margin:50vw 0 0 0; height:100vw">
+            <div id = "icon" align="center">
+<!--                TODO logo不能直接加载-->
+                <img src = "">
+            </div>
+            <br>
+            <div id = "search" align="center">
+                <input id = "input"
+                       style = "width:70%; height:12%; font-size:5vw;
+                       border: 2px solid #646464; border-radius:65535px; text-indent:3vh;"
+                       onkeypress = "if(window.event.keyCode == 13) jump()">
+                <script>
+                    var input = document.getElementById('input');
+                    function jump(){
+                        if(input.value == "")
+                            return;
+                        window.location.href = "https://cn.bing.com/search?q=" + input.value;
+                    }
+                </script>
+            </div>
+        </div>
+    </body>
+
+</html>

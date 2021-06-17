@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     //webView所加载的主页链接
-    private final static String HOME_URL = "https://cn.bing.com";
+    private final static String HOME_URL = "file:///android_asset/web/mainpage.html";
     private WebView webView;
 
     @Override
@@ -70,14 +70,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.buttonAddMark).setOnClickListener( v ->{
+        findViewById(R.id.buttonAddMark).setOnClickListener(v -> {
             //增加书签按钮，把当前页面制作成书签存储起来
             String url = webView.getUrl();
             String title = webView.getTitle();
             addBookmarkDialog(MainActivity.this, title, url);
         });
 
-        findViewById(R.id.buttonMarks).setOnClickListener( v ->{
+        findViewById(R.id.buttonMarks).setOnClickListener(v -> {
             //书签按钮，跳转到书签界面
             Intent intent = new Intent();
             intent.setClass(MainActivity.this, BookmarkActivity.class);
@@ -144,6 +144,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (url.startsWith("http://") || url.startsWith("https://")) {
+                    // webView.loadDataWithBaseURL("file:///android_asset/web", html, "text/html", "UTF-8", null);
+                    if_load=false;
                     webView.loadUrl(url);
                     return true;
                 } else {
@@ -160,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
                 super.onPageFinished(view, url);
 
                 if (if_load) {
-                    new HistoryController(MainActivity.this).addHistory(view.copyBackForwardList().getCurrentItem().getTitle(), view.copyBackForwardList().getCurrentItem().getUrl());
+                    new HistoryController(MainActivity.this).addHistory(view.getTitle(), view.getUrl());
                     if_load = false;
                 }
             }
@@ -192,6 +194,12 @@ public class MainActivity extends AppCompatActivity {
 
         webSettings.setBlockNetworkImage(true); // 禁止或允许WebView从网络上加载图片
         webSettings.setLoadsImagesAutomatically(true);// 支持自动加载图片
+
+        //允许访问文件
+        webSettings.setAllowFileAccess(true);
+        webSettings.setAllowFileAccessFromFileURLs(true);
+        webSettings.setAllowContentAccess(true);
+        webSettings.setDomStorageEnabled(true);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             webSettings.setSafeBrowsingEnabled(true); // 是否开启安全模式
