@@ -86,8 +86,9 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.buttonHistory).setOnClickListener(v -> {
             //历史记录按钮
-            Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
-            startActivity(intent);
+            Intent intent = new Intent();
+            intent.setClass(MainActivity.this, HistoryActivity.class);
+            startActivityForResult(intent, 2);
         });
 
         //主页按钮，返回主页
@@ -258,6 +259,12 @@ public class MainActivity extends AppCompatActivity {
         // super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case 1: //接受书签url并且返回
+                if (resultCode == RESULT_OK) {
+                    String url = data.getStringExtra("url");
+                    webView.loadUrl(url);
+                }
+                break;
+            case 2:
                 if (resultCode == RESULT_OK) {
                     String url = data.getStringExtra("url");
                     webView.loadUrl(url);

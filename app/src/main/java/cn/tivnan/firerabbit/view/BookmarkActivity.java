@@ -12,6 +12,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -25,7 +26,8 @@ import cn.tivnan.firerabbit.controller.BookmarkController;
 import cn.tivnan.firerabbit.entity.Bookmark;
 
 public class BookmarkActivity extends AppCompatActivity {
-
+    //TODO 书签分类，从一个分类移动到另一个分类，清空，搜索，云同步（同步上传、下载、合并逻辑）
+    //TODO 用户管理：1.登录（注册）：手机验证码、用户名密码、相关UI界面，2.账号登出：提供合适的登出入口， 3.账号编辑：头像昵称，4.账号登录：第三方登录（微信、支付宝），多账号管理问题
     private List<Bookmark> bookmarkList = new ArrayList<>();
     private BookmarkController bookmarkController;
     private BookmarkAdapter bookmarkAdapter;
@@ -44,8 +46,6 @@ public class BookmarkActivity extends AppCompatActivity {
         }
 
         initBookmarks();
-
-
         //实现点击事件
         bookmarkAdapter.setOnMyItemClickListener(new BookmarkAdapter.OnMyItemClickListener() {
             //单击跳转
@@ -72,8 +72,7 @@ public class BookmarkActivity extends AppCompatActivity {
                         switch (item.getItemId()){
                                 //点击删除
                             case R.id.deleteItem:
-                                bookmarkController.removeBookmark(bookmarkList.get(pos).getUrl());//从数据库中删除
-                                bookmarkList.remove(pos);//别忘了更新bookList中的数据，不执行这一步的话adapter中的bookList不会更新的
+                                bookmarkController.removeBookmarkByUrl(pos);//从数据库中删除
                                 bookmarkAdapter.notifyItemRemoved(pos);//最后再通知adapter更新页面
                                 break;
                                 //点击编辑跳转至编辑页面
@@ -110,14 +109,6 @@ public class BookmarkActivity extends AppCompatActivity {
         });
 
     }
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                this.finish(); // back button
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     //加载书签页面
     private void initBookmarks(){
@@ -133,7 +124,7 @@ public class BookmarkActivity extends AppCompatActivity {
         bookmarkRecycler.setAdapter(bookmarkAdapter);
     }
 
-    //
+    //修改完成后回调此函数，
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -158,5 +149,13 @@ public class BookmarkActivity extends AppCompatActivity {
                 break;
             default:
         }
+    }
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish(); // back button
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

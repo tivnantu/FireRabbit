@@ -1,5 +1,7 @@
 package cn.tivnan.firerabbit.view;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -8,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -34,6 +37,13 @@ public class HistoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
+        //添加标题栏返回按钮
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null){
+            actionBar.setHomeButtonEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
         initHistories();
 
     }
@@ -50,7 +60,7 @@ public class HistoryActivity extends AppCompatActivity {
 
         historyAdapter.setOnItemClickListener(new HistoryAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(View v, int pos) {
+            public void onItemClick(View v, int pos) {//TODO 点击历史记录跳转到网页
                 Intent intent = new Intent();//没有任何参数（意图），只是用来传递数据
                 intent.putExtra("url", historyList.get(pos).getUrl());
                 setResult(RESULT_OK, intent);
@@ -68,17 +78,32 @@ public class HistoryActivity extends AppCompatActivity {
                         switch (item.getItemId()) {
                             //点击删除
                             case R.id.deleteItem:
-                                historyController.removeHistory(historyList.get(pos).getUrl());//从数据库中删除
-                                historyList.remove(pos);//别忘了更新bookList中的数据，不执行这一步的话adapter中的bookList不会更新的
+                                historyController.removeHistoryById(pos);
                                 historyAdapter.notifyItemRemoved(pos);//最后再通知adapter更新页面
                                 break;
-                            //点击编辑跳转至编辑页面
+                            //点击清空历史记录
                             case R.id.deleteAllItem:
-                                historyController.removeAllHistory();
-                                historyList.clear();
-                                historyAdapter.notifyDataSetChanged();
+                                //清空之前需要确认
+                                AlertDialog dialog = new AlertDialog.Builder(v.getContext())
+                                        .setTitle("您确定清空历史吗？")//设置对话框的标题
+                                        //设置对话框的按钮
+                                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                            }
+                                        })
+                                        .setPositiveButton("清空", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                historyController.removeAllHistory();
+                                                historyList.clear();
+                                                historyAdapter.notifyDataSetChanged();
+                                            }
+                                        }).create();
+                                dialog.show();
                                 break;
-                            //点击复制选中的书签
+                            //点击复制选中的历史记录url
                             case R.id.copyItemLink:
                                 //获取剪贴板管理器
                                 ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
@@ -103,11 +128,18 @@ public class HistoryActivity extends AppCompatActivity {
 
             @Override
             public void onItemDeleteClick(View v, int pos) {
-                historyController.removeHistory(historyList.get(pos).getUrl());
-                historyList.remove(pos);
-                historyAdapter.notifyItemRemoved(pos);
+                historyController.removeHistoryById(pos);
+                historyAdapter.notifyItemRemoved(pos);//最后再通知adapter更新页面
             }
         });
+    }
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish(); // back button
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 

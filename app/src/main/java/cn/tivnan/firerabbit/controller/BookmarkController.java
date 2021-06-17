@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,6 +15,7 @@ import cn.tivnan.firerabbit.model.BookmarkDataHelper;
 
 public class BookmarkController {
     private final BookmarkDataHelper bookmarkDBHelper;
+    private List<Bookmark> bookmarkList;
 
     public BookmarkController(Context context) {
         this.bookmarkDBHelper = new BookmarkDataHelper(context, "FireRabbit", null, 1);
@@ -51,7 +53,7 @@ public class BookmarkController {
     //将书签填充进BookmarkList
     public List<Bookmark> getBookmarkList() {
         Cursor cursor = bookmarkDBHelper.queryAllBookmarks();
-        List<Bookmark> bookmarkList = new ArrayList<>();
+        bookmarkList = new ArrayList<>();
         if (cursor.moveToFirst()){
             do {
                 //遍历Cursor对象，取出数据装进bookList
@@ -68,8 +70,9 @@ public class BookmarkController {
         bookmarkDBHelper.updateBookmark(newName, newUrl, oldUrl);
     }
     //删除书签
-    public void removeBookmark(String url){
-        bookmarkDBHelper.deleteBookmark(url);
+    public void removeBookmarkByUrl(int pos) {
+        bookmarkDBHelper.deleteBookmark(bookmarkList.get(pos).getUrl());
+        bookmarkList.remove(pos);//别忘了更新bookList中的数据，不执行这一步的话adapter中的bookList不会更新的
     }
 
 }
