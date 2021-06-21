@@ -28,6 +28,10 @@ import cn.tivnan.firerabbit.entity.Bookmark;
 public class BookmarkActivity extends AppCompatActivity {
     //TODO 书签分类，从一个分类移动到另一个分类，清空，搜索，云同步（同步上传、下载、合并逻辑）
     //TODO 用户管理：1.登录（注册）：手机验证码、用户名密码、相关UI界面，2.账号登出：提供合适的登出入口， 3.账号编辑：头像昵称，4.账号登录：第三方登录（微信、支付宝），多账号管理问题
+
+    //TODO 对网页中的图片进行点击查看，一个网页中有多个图片应该是一个合集，旋转、移动、裁剪、保存。
+    //TODO 视频点击播放、暂停以及恢复，支持3:4，9:16以及全屏播放
+    //TODO 进阶：对图片添加滤镜，对视频进行裁剪
     private List<Bookmark> bookmarkList = new ArrayList<>();
     private BookmarkController bookmarkController;
     private BookmarkAdapter bookmarkAdapter;
@@ -73,7 +77,7 @@ public class BookmarkActivity extends AppCompatActivity {
                                 //点击删除
                             case R.id.deleteItem:
                                 bookmarkController.removeBookmarkByUrl(pos);//从数据库中删除
-                                bookmarkAdapter.notifyItemRemoved(pos);//最后再通知adapter更新页面
+                                bookmarkAdapter.notifyDataSetChanged();//最后再通知adapter更新页面
                                 break;
                                 //点击编辑跳转至编辑页面
                             case R.id.editItem:
@@ -141,8 +145,11 @@ public class BookmarkActivity extends AppCompatActivity {
 //                    Log.d("testP", String.valueOf(p));
 
 //                    更改书签后，刷新书签列表的页面
-                    //bookmarkList = bookmarkController.getBookmarkList();//为什么不能通过重新加载bookmarkList的方式更新呢？？？？
-                    bookmarkList.set(p, new Bookmark(data.getStringExtra("newName"), data.getStringExtra("newUrl")));//必须更新bookmarkList才能在界面上更新
+                    List<Bookmark> bookmarkLists = new ArrayList<>();
+                    bookmarkLists = bookmarkController.getBookmarkList();//为什么不能通过重新加载bookmarkList的方式更新呢？？？？
+//                    bookmarkList.set(p, new Bookmark(data.getStringExtra("newName"), data.getStringExtra("newUrl")));//必须更新bookmarkList才能在界面上更新
+                    bookmarkList.clear();
+                    bookmarkList.addAll(bookmarkLists);
                     bookmarkAdapter.notifyDataSetChanged();
 //                    initBookmarks();//这样会及时更新但会导致再次点击item时无响应的情况
                 }

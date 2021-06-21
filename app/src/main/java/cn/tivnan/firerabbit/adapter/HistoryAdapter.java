@@ -71,6 +71,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
                 @Override
                 public void onClick(View v) {
                     mOnItemClickListener.onItemDeleteClick(v, position);
+
                 }
             });
 

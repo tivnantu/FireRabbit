@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -60,7 +61,9 @@ public class HistoryActivity extends AppCompatActivity {
 
         historyAdapter.setOnItemClickListener(new HistoryAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(View v, int pos) {//TODO 点击历史记录跳转到网页
+            public void onItemClick(View v, int pos) {
+                Log.d("onClickItem", String.valueOf(pos));
+
                 Intent intent = new Intent();//没有任何参数（意图），只是用来传递数据
                 intent.putExtra("url", historyList.get(pos).getUrl());
                 setResult(RESULT_OK, intent);
@@ -128,8 +131,10 @@ public class HistoryActivity extends AppCompatActivity {
 
             @Override
             public void onItemDeleteClick(View v, int pos) {
+                Log.d("onClickDelete", String.valueOf(pos));
                 historyController.removeHistoryById(pos);
-                historyAdapter.notifyItemRemoved(pos);//最后再通知adapter更新页面
+//                historyAdapter.notifyItemRemoved(pos);//使用这种方式更新会导致pos错乱
+                historyAdapter.notifyDataSetChanged();//最后再通知adapter更新页面
             }
         });
     }

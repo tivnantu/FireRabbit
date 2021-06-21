@@ -4,7 +4,7 @@
     package="cn.tivnan.firerabbit">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -16,9 +16,11 @@
         android:theme="@style/Theme.FireRabbit"
         tools:replace="android:appComponentFactory">
         <activity
+            android:name=".view.LoginActivity"
+            android:label="注册/登录" />
+        <activity
             android:name=".view.HistoryActivity"
-            android:label="历史"
-            ></activity>
+            android:label="历史" />
         <activity
             android:name=".view.BookmarkEditActivity"
             android:label="编辑书签" />

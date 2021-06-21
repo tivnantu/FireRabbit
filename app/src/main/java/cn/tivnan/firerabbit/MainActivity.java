@@ -32,6 +32,7 @@ import cn.tivnan.firerabbit.controller.BookmarkController;
 import cn.tivnan.firerabbit.controller.HistoryController;
 import cn.tivnan.firerabbit.view.BookmarkActivity;
 import cn.tivnan.firerabbit.view.HistoryActivity;
+import cn.tivnan.firerabbit.view.LoginActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -99,6 +100,12 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent();
             intent.setClass(MainActivity.this, HistoryActivity.class);
             startActivityForResult(intent, 2);
+        });
+
+        findViewById(R.id.buttonUser).setOnClickListener(v ->{
+            //用户按钮
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
         });
 
         //主页按钮，返回主页
