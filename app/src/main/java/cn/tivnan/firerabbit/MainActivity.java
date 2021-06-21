@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Selection;
+import android.text.Spannable;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,6 +16,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -34,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     //webView所加载的主页链接
     private final static String HOME_URL = "file:///android_asset/web/mainpage.html";
     private WebView webView;
+    private String URL_NOW;
+    private String TITLE_NOW;
 
     @Override
     protected void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
@@ -130,6 +135,24 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        EditText topTitle = findViewById(R.id.url);
+        topTitle.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                topTitle.setText(URL_NOW); //添加这句后实现效果
+                Spannable content = topTitle.getText();
+                Selection.selectAll(content);
+            }
+        });
+
+        findViewById(R.id.buttonRefresh).setOnClickListener(v -> {
+            webView.reload();
+        });
+
+        findViewById(R.id.buttonGoto).setOnClickListener(v -> {
+
+        });
+
     }
 
     private void initWebView(WebView webView) {
@@ -192,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setBuiltInZoomControls(false);
         webSettings.setDisplayZoomControls(false);// 隐藏原生的缩放控件
 
-        webSettings.setBlockNetworkImage(true); // 禁止或允许WebView从网络上加载图片
+        webSettings.setBlockNetworkImage(false); // 禁止或允许WebView从网络上加载图片
         webSettings.setLoadsImagesAutomatically(true);// 支持自动加载图片
 
         //允许访问文件

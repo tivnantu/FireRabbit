@@ -62,11 +62,10 @@
         android:id="@+id/webview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="40dp"
         android:backgroundTint="@color/white"
-        app:layout_constraintTop_toBottomOf="@+id/topLayout"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-        android:layout_marginTop="40dp">
-    </WebView>
+        app:layout_constraintTop_toBottomOf="@+id/topLayout"></WebView>
 
     <LinearLayout
         android:id="@+id/linearLayout"
