@@ -26,6 +26,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.net.URL;
+
 import cn.tivnan.firerabbit.controller.BookmarkController;
 import cn.tivnan.firerabbit.controller.HistoryController;
 import cn.tivnan.firerabbit.view.BookmarkActivity;
@@ -38,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private final static String HOME_URL = "file:///android_asset/web/mainpage.html";
     private WebView webView;
     private String URL_NOW;
-    private String TITLE_NOW;
+    private EditText topTitle;
 
     @Override
     protected void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
@@ -58,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         //核心的webView，网页内容在此呈现，打开App先加载主页
         webView = findViewById(R.id.webview);
         initWebView(webView);
+        topTitle = findViewById(R.id.url);
 
         //返回按钮，返回后一个网页
         findViewById(R.id.buttonBack).setOnClickListener(v -> {
@@ -76,6 +79,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.buttonAddMark).setOnClickListener(v -> {
+            if(webView.getUrl().equals(HOME_URL))
+                return;
             //增加书签按钮，把当前页面制作成书签存储起来
             String url = webView.getUrl();
             String title = webView.getTitle();
@@ -103,9 +108,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.menu3).setVisibility(View.INVISIBLE);
         findViewById(R.id.buttonLess).setVisibility(View.GONE);
 
-        findViewById(R.id.buttonMore).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View arg0) {//实际处理button的click事件的方法
+        findViewById(R.id.buttonMore).setOnClickListener(v ->{//实际处理button的click事件的方法
 
                 findViewById(R.id.buttonBack).setVisibility(View.INVISIBLE);
                 findViewById(R.id.buttonForward).setVisibility(View.INVISIBLE);
@@ -116,12 +119,9 @@ public class MainActivity extends AppCompatActivity {
                 findViewById(R.id.buttonMore).setVisibility(View.GONE);
                 findViewById(R.id.buttonLess).setVisibility(View.VISIBLE);
 
-            }
         });
 
-        findViewById(R.id.buttonLess).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View arg0) {//实际处理button的click事件的方法
+        findViewById(R.id.buttonLess).setOnClickListener(v ->{//实际处理button的click事件的方法
 
                 findViewById(R.id.menu3).setVisibility(View.INVISIBLE);
                 findViewById(R.id.menu2).setVisibility(View.INVISIBLE);
@@ -132,16 +132,32 @@ public class MainActivity extends AppCompatActivity {
                 findViewById(R.id.buttonLess).setVisibility(View.GONE);
                 findViewById(R.id.buttonMore).setVisibility(View.VISIBLE);
 
-            }
         });
 
-        EditText topTitle = findViewById(R.id.url);
+
+        findViewById(R.id.buttonQuit).setOnClickListener(v ->{
+            System.exit(0);
+        });
+
         topTitle.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!topTitle.getText().toString().equals(webView.getUrl()))
+                    return;
                 topTitle.setText(URL_NOW); //添加这句后实现效果
                 Spannable content = topTitle.getText();
                 Selection.selectAll(content);
+            }
+        });
+
+        topTitle.setOnFocusChangeListener(new android.view.View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    topTitle.setText(URL_NOW); //添加这句后实现效果
+                } else {
+                    topTitle.setText(webView.getTitle());
+                }
             }
         });
 
@@ -150,7 +166,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.buttonGoto).setOnClickListener(v -> {
-
+            String url = topTitle.getText().toString();
+            if(url.equals(webView.getTitle()))
+                webView.reload();
+            else if(url.startsWith("http://") || url.startsWith("https://"))
+                webView.loadUrl(url);
+            else
+                webView.loadUrl("https://cn.bing.com/search?q=" + url);
         });
 
     }
@@ -185,6 +207,15 @@ public class MainActivity extends AppCompatActivity {
                 super.onPageFinished(view, url);
 
                 if (if_load) {
+                    if(webView.getUrl().equals("file:///android_asset/web/mainpage.html")){
+                        URL_NOW = "";
+                        topTitle.setText("欢迎使用FireRabbit！");
+                        return;
+                    }
+
+                    URL_NOW = webView.getUrl();
+                    topTitle.setText(view.getTitle());
+
                     new HistoryController(MainActivity.this).addHistory(view.getTitle(), view.getUrl());
                     if_load = false;
                 }
@@ -194,6 +225,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
+
+                topTitle.setText(view.getUrl());
 
                 if_load = true;
             }

@@ -37,8 +37,9 @@
             android:layout_width="match_parent"
             android:layout_height="28dp"
             android:layout_weight="2"
-            android:text="输入网址开始浏览"
-            android:background="@null">
+            android:text="欢迎使用FireRabbit！"
+            android:background="@null"
+            android:singleLine="true">
 
         </EditText>
 
