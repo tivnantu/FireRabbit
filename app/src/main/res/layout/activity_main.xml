@@ -7,12 +7,66 @@
     android:backgroundTint="@color/white"
     tools:context=".MainActivity">
 
+    <LinearLayout
+        android:id="@+id/topLayout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/white"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/buttonRefresh"
+            android:layout_width="match_parent"
+            android:layout_height="28dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_weight="7"
+            android:backgroundTint="@color/white"
+            android:gravity="center"
+            android:stateListAnimator="@null"
+            app:icon="@drawable/refresh"
+            app:iconGravity="textEnd"
+            app:iconTint="#03A9F4" />
+
+        <EditText
+            android:id="@+id/url"
+            android:layout_width="match_parent"
+            android:layout_height="28dp"
+            android:layout_weight="2"
+            android:text="输入网址开始浏览"
+            android:background="@null">
+
+        </EditText>
+
+        <Button
+            android:id="@+id/buttonGoto"
+            android:layout_width="match_parent"
+            android:layout_height="28dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_weight="7"
+            android:backgroundTint="@color/white"
+            android:gravity="center"
+            android:stateListAnimator="@null"
+            app:icon="@drawable/gotourl"
+            app:iconGravity="textEnd"
+            app:iconTint="#03A9F4" />
+
+    </LinearLayout>
+
     <WebView
         android:id="@+id/webview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:backgroundTint="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/topLayout"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        android:layout_marginTop="40dp">
+    </WebView>
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -43,6 +97,7 @@
                 android:gravity="center"
                 android:stateListAnimator="@null"
                 app:icon="@drawable/addmark"
+                app:iconGravity="textEnd"
                 app:iconTint="#646464" />
 
             <Button
@@ -54,6 +109,7 @@
                 android:gravity="center"
                 android:stateListAnimator="@null"
                 app:icon="@drawable/bookmark"
+                app:iconGravity="textEnd"
                 app:iconTint="#646464" />
 
             <Button
@@ -65,6 +121,7 @@
                 android:gravity="center"
                 android:stateListAnimator="@null"
                 app:icon="@drawable/history"
+                app:iconGravity="textEnd"
                 app:iconTint="#646464" />
 
             <Button
@@ -76,6 +133,7 @@
                 android:gravity="center"
                 android:stateListAnimator="@null"
                 app:icon="@drawable/download"
+                app:iconGravity="textEnd"
                 app:iconTint="#646464" />
 
             <Button
@@ -87,6 +145,7 @@
                 android:gravity="center"
                 android:stateListAnimator="@null"
                 app:icon="@drawable/invisible"
+                app:iconGravity="textEnd"
                 app:iconTint="#646464" />
 
         </LinearLayout>
@@ -110,6 +169,7 @@
                 android:gravity="center"
                 android:stateListAnimator="@null"
                 app:icon="@drawable/share"
+                app:iconGravity="textEnd"
                 app:iconTint="#646464" />
 
             <Button
@@ -121,6 +181,7 @@
                 android:gravity="center"
                 android:stateListAnimator="@null"
                 app:icon="@drawable/nightmod"
+                app:iconGravity="textEnd"
                 app:iconTint="#646464" />
 
             <Button
@@ -131,6 +192,7 @@
                 android:backgroundTint="@color/white"
                 android:gravity="center"
                 android:stateListAnimator="@null"
+                app:iconGravity="textEnd"
                 app:iconTint="#646464" />
             <!--app:icon="@drawable/main"-->
 
@@ -144,6 +206,7 @@
                 android:gravity="center"
                 android:stateListAnimator="@null"
                 app:icon="@drawable/quit"
+                app:iconGravity="textEnd"
                 app:iconTint="#646464" />
 
             <Button
@@ -155,6 +218,7 @@
                 android:gravity="center"
                 android:stateListAnimator="@null"
                 app:icon="@drawable/setting"
+                app:iconGravity="textEnd"
                 app:iconTint="#646464" />
 
         </LinearLayout>
@@ -178,6 +242,7 @@
                 android:gravity="center"
                 android:stateListAnimator="@null"
                 app:icon="@drawable/back"
+                app:iconGravity="textEnd"
                 app:iconTint="#646464" />
 
             <Button
@@ -189,6 +254,7 @@
                 android:gravity="center"
                 android:stateListAnimator="@null"
                 app:icon="@drawable/forward"
+                app:iconGravity="textEnd"
                 app:iconTint="#646464" />
 
             <Button
@@ -200,6 +266,7 @@
                 android:gravity="center"
                 android:stateListAnimator="@null"
                 app:icon="@drawable/main"
+                app:iconGravity="textEnd"
                 app:iconTint="#646464" />
 
             <Button
@@ -211,6 +278,7 @@
                 android:gravity="center"
                 android:stateListAnimator="@null"
                 app:icon="@drawable/addmark"
+                app:iconGravity="textEnd"
                 app:iconTint="#646464" />
 
             <Button
@@ -222,6 +290,7 @@
                 android:gravity="center"
                 android:stateListAnimator="@null"
                 app:icon="@drawable/more"
+                app:iconGravity="textEnd"
                 app:iconTint="#646464" />
 
             <Button
@@ -233,8 +302,10 @@
                 android:gravity="center"
                 android:stateListAnimator="@null"
                 app:icon="@drawable/less"
+                app:iconGravity="textEnd"
                 app:iconTint="#646464" />
 
         </LinearLayout>
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
