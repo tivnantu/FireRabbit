@@ -38,12 +38,13 @@
             android:textSize="10dp"/>
 
     </LinearLayout>
+
     <ImageView
         android:id="@+id/history_item_delete"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_gravity="center_vertical"
-        android:src="@drawable/delete"/>
+        android:src="@drawable/delete" />
 
 
 

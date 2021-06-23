@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import cn.tivnan.firerabbit.R;
 import cn.tivnan.firerabbit.util.CheckEditForButton;
@@ -18,6 +19,7 @@ import cn.tivnan.firerabbit.util.EditTextChangeListener;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText editText_name, editText_password;
+    private TextView tips;
     private Button button_login;
     private CheckBox checkBox;
 
@@ -29,6 +31,7 @@ public class LoginActivity extends AppCompatActivity {
         editText_password = findViewById(R.id.user_password);
         button_login = findViewById(R.id.login);
         checkBox = findViewById(R.id.checkbox);
+        tips = findViewById(R.id.loginTips);
 
         //1.创建工具类对象 设置监听空间
         CheckEditForButton checkEditForButton = new CheckEditForButton(button_login);
@@ -64,6 +67,15 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        button_login.setOnClickListener(v -> {
+
+            tips.setText("用户名不存在");
+
+            tips.setText("密码错误");
+
+            tips.setText("连接超时，请检查网络");
+
+        });
 
     }
 }
