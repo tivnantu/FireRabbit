@@ -20,7 +20,7 @@ import cn.tivnan.firerabbit.util.EditTextChangeListener;
 public class LoginActivity extends AppCompatActivity {
     private EditText editText_name, editText_password;
     private TextView tips;
-    private Button button_login;
+    private Button button_login, button_register;
     private CheckBox checkBox;
 
     @Override
@@ -30,6 +30,7 @@ public class LoginActivity extends AppCompatActivity {
         editText_name = findViewById(R.id.user_name);
         editText_password = findViewById(R.id.user_password);
         button_login = findViewById(R.id.login);
+        button_register = findViewById(R.id.register);
         checkBox = findViewById(R.id.checkbox);
         tips = findViewById(R.id.loginTips);
 
@@ -72,6 +73,14 @@ public class LoginActivity extends AppCompatActivity {
             tips.setText("用户名不存在");
 
             tips.setText("密码错误");
+
+            tips.setText("连接超时，请检查网络");
+
+        });
+
+        button_register.setOnClickListener(v -> {
+
+            tips.setText("用户名重复");
 
             tips.setText("连接超时，请检查网络");
 
