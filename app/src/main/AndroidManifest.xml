@@ -16,7 +16,7 @@
         android:theme="@style/Theme.FireRabbit"
         tools:replace="android:appComponentFactory">
         <activity
-            android:name=".view.LoginActivity"
+            android:name=".view.LoginOrRegisterActivity"
             android:label="注册/登录" />
         <activity
             android:name=".view.HistoryActivity"

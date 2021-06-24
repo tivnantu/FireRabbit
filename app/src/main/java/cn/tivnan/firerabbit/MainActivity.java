@@ -9,30 +9,22 @@ import android.os.Bundle;
 import android.text.Selection;
 import android.text.Spannable;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.net.URL;
 
 import cn.tivnan.firerabbit.controller.BookmarkController;
 import cn.tivnan.firerabbit.controller.HistoryController;
 import cn.tivnan.firerabbit.view.BookmarkActivity;
 import cn.tivnan.firerabbit.view.HistoryActivity;
-import cn.tivnan.firerabbit.view.LoginActivity;
+import cn.tivnan.firerabbit.view.LoginOrRegisterActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -104,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.buttonUser).setOnClickListener(v ->{
             //用户按钮
-            Intent intent = new Intent(this, LoginActivity.class);
+            Intent intent = new Intent(this, LoginOrRegisterActivity.class);
             startActivity(intent);
         });
 

@@ -133,8 +133,16 @@ public class HistoryActivity extends AppCompatActivity {
             public void onItemDeleteClick(View v, int pos) {
                 Log.d("onClickDelete", String.valueOf(pos));
                 historyController.removeHistoryById(pos);
-//                historyAdapter.notifyItemRemoved(pos);//使用这种方式更新会导致pos错乱
-                historyAdapter.notifyDataSetChanged();//最后再通知adapter更新页面
+//                historyAdapter.notifyItemRemoved(pos);//使用这种方式更新会导致pos错乱,函数里面的传入的参数position，
+//                它是在进行onBind操作时确定的，在删除单项后，已经出现在画面里的项不会再有调用onBind机会，
+//                这样它保留的position一直是未进行删除操作前的position值。
+
+//                historyAdapter.notifyDataSetChanged();//解决办法1：整个列表重新加载
+
+                historyAdapter.notifyItemRemoved(pos);//解决办法2：对于被删掉的位置及其后range大小范围内的view进行重新onBindViewHolder
+                if (pos != historyList.size())
+                    historyAdapter.notifyItemRangeChanged(pos,historyList.size() - pos);
+
             }
         });
     }
