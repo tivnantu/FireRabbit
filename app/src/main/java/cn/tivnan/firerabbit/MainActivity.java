@@ -2,6 +2,7 @@ package cn.tivnan.firerabbit;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private WebView webView;
     private String URL_NOW;
     private EditText topTitle;
+    private boolean invisibleMod;
 
     @Override
     protected void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
@@ -55,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         webView = findViewById(R.id.webview);
         initWebView(webView);
         topTitle = findViewById(R.id.url);
+        invisibleMod = false;
 
         //返回按钮，返回后一个网页
         findViewById(R.id.buttonBack).setOnClickListener(v -> {
@@ -118,6 +121,13 @@ public class MainActivity extends AppCompatActivity {
                 findViewById(R.id.menu3).setVisibility(View.VISIBLE);
                 findViewById(R.id.buttonMore).setVisibility(View.GONE);
                 findViewById(R.id.buttonLess).setVisibility(View.VISIBLE);
+                if(invisibleMod){
+                    findViewById(R.id.buttonVisibleMod).setVisibility(View.VISIBLE);
+                    findViewById(R.id.buttonInvisibleMod).setVisibility(View.GONE);
+                }else{
+                    findViewById(R.id.buttonVisibleMod).setVisibility(View.GONE);
+                    findViewById(R.id.buttonInvisibleMod).setVisibility(View.VISIBLE);
+                }
 
         });
 
@@ -173,8 +183,24 @@ public class MainActivity extends AppCompatActivity {
                 webView.loadUrl(url);
             else if (URLUtil.isNetworkUrl("http://"+url)&&URLUtil.isValidUrl("http://"+url))
                 webView.loadUrl("http://"+url);
-                else
+            else if (URLUtil.isNetworkUrl("https://"+url)&&URLUtil.isValidUrl("https://"+url))
+                webView.loadUrl("https://"+url);
+            else
                 webView.loadUrl("https://cn.bing.com/search?q=" + url);
+        });
+
+        findViewById(R.id.buttonInvisibleMod).setOnClickListener(v -> {
+            invisibleMod = true;
+            findViewById(R.id.buttonVisibleMod).setVisibility(View.VISIBLE);
+            findViewById(R.id.buttonInvisibleMod).setVisibility(View.GONE);
+            createDialog("您已进入无痕模式");
+        });
+
+        findViewById(R.id.buttonVisibleMod).setOnClickListener(v -> {
+            invisibleMod = false;
+            findViewById(R.id.buttonVisibleMod).setVisibility(View.GONE);
+            findViewById(R.id.buttonInvisibleMod).setVisibility(View.VISIBLE);
+            createDialog("您已退出无痕模式");
         });
 
     }
@@ -217,6 +243,9 @@ public class MainActivity extends AppCompatActivity {
 
                     URL_NOW = webView.getUrl();
                     topTitle.setText(view.getTitle());
+
+                    if(invisibleMod)
+                        return;
 
                     new HistoryController(MainActivity.this).addHistory(view.getTitle(), view.getUrl());
                     if_load = false;
@@ -339,5 +368,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void createDialog(String message) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+        dialog.setTitle(message);
+        dialog.setPositiveButton("确认",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {}
+                }
+        );
+        dialog.show();
+    }
 
 }
