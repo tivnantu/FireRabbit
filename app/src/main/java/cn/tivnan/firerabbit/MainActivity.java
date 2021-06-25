@@ -10,6 +10,7 @@ import android.text.Selection;
 import android.text.Spannable;
 import android.view.KeyEvent;
 import android.view.View;
+import android.webkit.URLUtil;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -170,7 +171,9 @@ public class MainActivity extends AppCompatActivity {
                 webView.reload();
             else if(url.startsWith("http://") || url.startsWith("https://"))
                 webView.loadUrl(url);
-            else
+            else if (URLUtil.isNetworkUrl("http://"+url)&&URLUtil.isValidUrl("http://"+url))
+                webView.loadUrl("http://"+url);
+                else
                 webView.loadUrl("https://cn.bing.com/search?q=" + url);
         });
 
