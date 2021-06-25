@@ -1,16 +1,22 @@
 package cn.tivnan.firerabbit;
 
 import android.annotation.SuppressLint;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Selection;
 import android.text.Spannable;
 import android.view.KeyEvent;
 import android.view.View;
+import android.webkit.DownloadListener;
 import android.webkit.URLUtil;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -21,6 +27,12 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 
 import cn.tivnan.firerabbit.controller.BookmarkController;
 import cn.tivnan.firerabbit.controller.HistoryController;
@@ -201,6 +213,46 @@ public class MainActivity extends AppCompatActivity {
             findViewById(R.id.buttonVisibleMod).setVisibility(View.GONE);
             findViewById(R.id.buttonInvisibleMod).setVisibility(View.VISIBLE);
             createDialog("您已退出无痕模式");
+        });
+        
+        findViewById(R.id.buttonShare).setOnClickListener(v ->{
+            if(webView.getUrl().equals("file:///android_asset/web/mainpage.html"))
+                return;
+            //获取剪贴板管理器
+            ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            // 创建普通字符型ClipData
+            ClipData mClipData = ClipData.newPlainText("urlCopied", webView.getUrl());
+            // 将ClipData内容放到系统剪贴板里。
+            cm.setPrimaryClip(mClipData);
+            createDialog("已将当前页面链接复制到剪贴板");
+        });
+
+        webView.setDownloadListener(new DownloadListener(){
+            @Override
+            public void onDownloadStart(String url, String userAgent, String contentDisposition,
+                                        String mimetype, long contentLength) {
+                Uri uri = Uri.parse(url);
+                Intent intent = new Intent(Intent.ACTION_VIEW,uri);
+                startActivity(intent);
+                //添加到下载记录;
+            }
+        });
+
+        findViewById(R.id.buttonDownload).setOnClickListener(v -> {
+            // 通过包名获取此APP详细信息，包括Activities、services、versioncode、name等等
+            PackageInfo packageinfo = null;
+            try {
+                packageinfo = getPackageManager().getPackageInfo("com.android.providers.downloads.ui", 0);
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+            if (packageinfo == null) {
+                //BDToast.showToast(getText(R.string.app_not_found).toString());
+                Toast.makeText(getApplicationContext(), "无法打开 下载管理", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            Intent resolveIntent = getPackageManager().getLaunchIntentForPackage("com.android.providers.downloads.ui");// 这里的packname就是从上面得到的目标apk的包名
+            startActivity(resolveIntent);// 启动目标应用
         });
 
     }
