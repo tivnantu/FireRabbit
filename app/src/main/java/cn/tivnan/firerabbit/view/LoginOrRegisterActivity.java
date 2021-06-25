@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -16,7 +17,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import java.io.IOException;
+import java.util.Map;
+import java.util.logging.Logger;
 
 import cn.tivnan.firerabbit.R;
 import cn.tivnan.firerabbit.util.CheckEditForButton;
@@ -45,7 +50,8 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String userName = String.valueOf(editText_name.getText());
                 String password = String.valueOf(editText_password.getText());
-                String address = "http://firerabbit.tivnan.cn/user/signin";
+                String address = "http://firerabbit.tivnan.cn/user/signin"+"?id="+userName+"&password="+password;
+//                String address = "http://www.baidu.com";
                 loginWithOkHttp(address, userName, password);
             }
         });
@@ -118,17 +124,21 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
         HttpUtil.loginWithOkHttp(address, userName, password, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                //对异常情况进行处理
             }
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+//                Log.d("123123", "run:+" +response.body().toString());
+
                 //得到服务器返回的具体内容
-                final String responseData = response.body().string();
-                //借助runOnUiThread方法进行线程转换，因为回调接口在子线程中运行，子线程内不可以执行任何UI操作
+                String responseData = response.body().string();
+                Log.d("12345", responseData);
+                Gson gson = new Gson();
+                Map map = gson.fromJson(responseData, Map.class);
+//                借助runOnUiThread方法进行线程转换，因为回调接口在子线程中运行，子线程内不可以执行任何UI操作
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (responseData.equals("true")){
+                        if (map.get("code").equals("200")){
                             Toast.makeText(LoginOrRegisterActivity.this,"登录成功",Toast.LENGTH_SHORT).show();
                         }else{
                             Toast.makeText(LoginOrRegisterActivity.this,"登录失败", Toast.LENGTH_SHORT).show();
@@ -149,14 +159,15 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 final String responseData = response.body().string();
+                Log.d("123456", responseData);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (responseData.equals("true")){
-                            Toast.makeText(LoginOrRegisterActivity.this,"注册成功",Toast.LENGTH_SHORT).show();
-                        }else{
-                            Toast.makeText(LoginOrRegisterActivity.this,"注册失败",Toast.LENGTH_SHORT).show();
-                        }
+//                        if (responseData.equals("true")){
+//                            Toast.makeText(LoginOrRegisterActivity.this,"注册成功",Toast.LENGTH_SHORT).show();
+//                        }else{
+//                            Toast.makeText(LoginOrRegisterActivity.this,"注册失败",Toast.LENGTH_SHORT).show();
+//                        }
                     }
                 });
             }

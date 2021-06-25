@@ -14,7 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FireRabbit"
-        tools:replace="android:appComponentFactory">
+        tools:replace="android:appComponentFactory"
+        android:networkSecurityConfig="@xml/network_security_config">
         <activity
             android:name=".view.LoginOrRegisterActivity"
             android:label="注册/登录" />
