@@ -1,4 +1,8 @@
 ## 找Bug记录
+
+### 后端
+- 返回的json文件中data数据写成了date
+
 ### OkHttp
 - Android高版本拒绝了所有Http请求，也就是不安全的请求
 - 后端只接受json数据，客户端这边老是传form过来

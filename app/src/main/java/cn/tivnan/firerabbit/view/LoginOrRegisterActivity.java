@@ -4,6 +4,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
@@ -114,6 +115,12 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
         HttpUtil.loginWithOkHttp(address, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                            Toast.makeText(LoginOrRegisterActivity.this,"登录失败onFailure，请检查网络是否连接", Toast.LENGTH_SHORT).show();
+                        }
+                });
             }
             @Override
             public void onResponse(Call call, Response response) throws IOException {
@@ -122,12 +129,22 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
                 String responseData = response.body().string();
                 Gson gson = new Gson();
                 Map map = gson.fromJson(responseData, Map.class);
+                Map data = (Map) map.get("date");
 //                借助runOnUiThread方法进行线程转换，因为回调接口在子线程中运行，子线程内不可以执行任何UI操作
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (map.get("code").equals("200")){
+                        if (map.get("code").equals("200")){//返回json文件中code=200则登录成功
                             Toast.makeText(LoginOrRegisterActivity.this,"登录成功",Toast.LENGTH_SHORT).show();
+                            //登录成功时将用户信息利用SharedPreferences存储起来（退出登录时将此信息删除），此信息有两个用途
+                            //一是文件的存在与否可以判断用户是否登录
+                            //二是在用户登录的情况下，可以在用户界面展示用户信息
+                            SharedPreferences.Editor editor = getSharedPreferences("userInfo", MODE_PRIVATE).edit();
+                            editor.putString("id", String.valueOf(data.get("id")));
+                            editor.putString("username", String.valueOf(data.get("username")));
+                            editor.putString("password", String.valueOf(data.get("password")));
+                            editor.apply();
+
                             openUserPage();
                         }else{
                             Toast.makeText(LoginOrRegisterActivity.this,"登录失败，请检查id和password", Toast.LENGTH_SHORT).show();
@@ -168,6 +185,7 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
     private void openUserPage() {
         Intent intent = new Intent(this, UserActivity.class);
         startActivity(intent);
+        this.finish();
     }
 
 }

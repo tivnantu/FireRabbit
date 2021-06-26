@@ -25,9 +25,11 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -39,6 +41,7 @@ import cn.tivnan.firerabbit.controller.HistoryController;
 import cn.tivnan.firerabbit.view.BookmarkActivity;
 import cn.tivnan.firerabbit.view.HistoryActivity;
 import cn.tivnan.firerabbit.view.LoginOrRegisterActivity;
+import cn.tivnan.firerabbit.view.UserActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -53,9 +56,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
-
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
         initView();
     }
 
@@ -112,13 +115,15 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.buttonUser).setOnClickListener(v ->{
             //用户按钮
-            if (isLogged) {//TODO 判断用户的登陆状态
-
+            //根据userInfo的存在与否判断登录状态，若存在，则为已登录，若不存在，则为未登录
+            File file = new File("/data/data/" + getPackageName() + "/shared_prefs/userInfo.xml");
+            if (file.exists()) {
+                Intent intent = new Intent(this, UserActivity.class);
+                startActivity(intent);
             } else {
-
+                Intent intent = new Intent(this, LoginOrRegisterActivity.class);
+                startActivity(intent);
             }
-            Intent intent = new Intent(this, LoginOrRegisterActivity.class);
-            startActivity(intent);
 
         });
 
