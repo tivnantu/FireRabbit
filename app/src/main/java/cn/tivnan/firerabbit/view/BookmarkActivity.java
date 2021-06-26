@@ -42,12 +42,12 @@ public class BookmarkActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bookmark);
-        //添加标题栏返回按钮
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null){
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+//        //添加标题栏返回按钮
+//        ActionBar actionBar = getSupportActionBar();
+//        if (actionBar != null){
+//            actionBar.setHomeButtonEnabled(true);
+//            actionBar.setDisplayHomeAsUpEnabled(true);
+//        }
 
         initBookmarks();
         //实现点击事件
@@ -157,12 +157,12 @@ public class BookmarkActivity extends AppCompatActivity {
             default:
         }
     }
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                this.finish(); // back button
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            case android.R.id.home:
+//                this.finish(); // back button
+//                return true;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 }

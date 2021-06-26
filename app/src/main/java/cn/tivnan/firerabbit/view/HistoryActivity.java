@@ -38,15 +38,7 @@ public class HistoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
-        //添加标题栏返回按钮
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null){
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-
         initHistories();
-
     }
     private void initHistories() {
         historyRecycler = (RecyclerView)findViewById(R.id.history_recycler_view);
@@ -146,15 +138,6 @@ public class HistoryActivity extends AppCompatActivity {
             }
         });
     }
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                this.finish(); // back button
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
 
 
 }

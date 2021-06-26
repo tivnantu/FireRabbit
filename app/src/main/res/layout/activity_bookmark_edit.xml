@@ -2,10 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:backgroundTint="@color/white"
     android:orientation="vertical">
 
+    <cn.tivnan.firerabbit.view.TitleLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titlelayout_title="编辑书签"/>
+
     <EditText
+        android:layout_marginTop="20dp"
         android:id="@+id/bookmark_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,6 +23,7 @@
         android:id="@+id/bookmark_url"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:layout_marginLeft="10dp"
         android:text="书签网址" />
 
@@ -24,5 +32,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="#2196F3"
+        android:layout_marginTop="20dp"
         android:text="完成" />
 </LinearLayout>

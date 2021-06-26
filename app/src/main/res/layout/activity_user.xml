@@ -1,84 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+<cn.tivnan.firerabbit.view.TitleLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:titlelayout_title="用户信息"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:fitsSystemWindows="true">
-        <LinearLayout
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="50dp">
+        <ImageView
+            android:id="@+id/user_photo"
+            android:src="@drawable/ic_user_avator"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal" />
+        <TextView
+            android:id="@+id/id_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="110dp">
-            <ImageView
-                android:id="@+id/user_pic"
-                android:src="@drawable/ic_user_avator"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center_horizontal" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="60dp"
-                android:orientation="horizontal"
-                android:layout_marginTop="30dp">
-
-                <Button
-                    android:layout_width="150dp"
-                    android:layout_height="match_parent">
-
-                </Button>
-
-                <Button
-                    android:layout_width="60dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="30dp">
-
-                </Button>
-
-                <Button
-                    android:layout_width="60dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="30dp">
-
-                </Button>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="60dp"
-                android:orientation="horizontal"
-                android:layout_marginTop="30dp">
-
-                <Button
-                    android:layout_width="150dp"
-                    android:layout_height="match_parent">
-
-                </Button>
-
-                <Button
-                    android:layout_width="60dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="30dp">
-
-                </Button>
-
-                <Button
-                    android:layout_width="60dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="30dp">
-
-                </Button>
-
-            </LinearLayout>
-
-        </LinearLayout>
+            android:text="ID："
+            android:layout_gravity="center_horizontal"/>            android:layout_gravity="center_horizontal" />
+        <TextView
+            android:id="@+id/username_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="13dp"
+            android:text="昵称："
+            android:layout_gravity="center_horizontal"/>
 
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+<!--    <cn.tivnan.firerabbit.view.ItemGroup-->
+<!--        android:id="@+id/id_ig"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:edt_hint_content=""-->
+<!--        app:jt_visible="true"-->
+<!--        app:paddingLeft="15dp"-->
+<!--        app:title="ID" />    -->
+<!--    <cn.tivnan.firerabbit.view.ItemGroup-->
+<!--        android:id="@+id/username_ig"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:edt_hint_content=""-->
+<!--        app:jt_visible="true"-->
+<!--        app:paddingLeft="15dp"-->
+<!--        app:title="昵称" />-->
+
+    <cn.tivnan.firerabbit.view.ItemGroup
+        android:id="@+id/edit_ig"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:edt_hint_content=""
+        app:jt_visible="true"
+        app:paddingLeft="15dp"
+        app:title="修改资料" />
+
+    <cn.tivnan.firerabbit.view.ItemGroup
+        android:id="@+id/bookmark_ig"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:isEditable="false"
+        app:paddingLeft="15dp"
+        app:title="书签" />
+
+    <cn.tivnan.firerabbit.view.ItemGroup
+        android:id="@+id/history_ig"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:isEditable="false"
+        app:paddingLeft="15dp"
+        app:title="历史" />
+
+    <cn.tivnan.firerabbit.view.ItemGroup
+        android:id="@+id/sync_ig"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:isEditable="false"
+        app:paddingLeft="15dp"
+        app:title="云同步" />
+
+    <cn.tivnan.firerabbit.view.ItemGroup
+        android:id="@+id/logout_ig"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:isEditable="false"
+        app:jt_visible="false"
+        app:paddingLeft="15dp"
+        app:title="退出登录" />
+
+
+</LinearLayout>

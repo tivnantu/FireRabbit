@@ -1,24 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fillViewport="true"
     android:layout_alignParentBottom="true"
-    android:scrollbars="vertical"
-    >
+    android:scrollbars="vertical">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:fitsSystemWindows="true">
 
+        <cn.tivnan.firerabbit.view.TitleLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:titlelayout_title="登录/注册"/>
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="110dp" >
+            android:layout_marginTop="50dp" >
 
             <ImageView
                 android:id="@+id/user_photo"

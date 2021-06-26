@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private WebView webView;
     private String URL_NOW;
     private EditText topTitle;
-    private boolean invisibleMod;
+    private boolean invisibleMod, isLogged;
 
     @Override
     protected void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
@@ -112,8 +112,14 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.buttonUser).setOnClickListener(v ->{
             //用户按钮
+            if (isLogged) {//TODO 判断用户的登陆状态
+
+            } else {
+
+            }
             Intent intent = new Intent(this, LoginOrRegisterActivity.class);
             startActivity(intent);
+
         });
 
         //主页按钮，返回主页
