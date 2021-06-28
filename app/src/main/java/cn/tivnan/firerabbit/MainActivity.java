@@ -18,6 +18,7 @@ import android.text.Spannable;
 import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.webkit.DownloadListener;
 import android.webkit.URLUtil;
 import android.webkit.WebSettings;
@@ -51,7 +52,9 @@ public class MainActivity extends AppCompatActivity {
     private String URL_NOW;
     private EditText topTitle;
     private boolean invisibleMod, nightMod;
-    private InputStream css;
+    private String css;
+    private AlphaAnimation black500ms;
+
 
     @Override
     protected void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
@@ -59,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
+        initNightMod();
         initView();
     }
 
@@ -310,7 +314,7 @@ public class MainActivity extends AppCompatActivity {
             findViewById(R.id.buttonGoto).setBackgroundColor(Color.parseColor("#000000"));
             topTitle.setTextColor(Color.parseColor("#646464"));
 
-            findViewById(R.id.nightGlasses).setVisibility(View.VISIBLE);
+            webView.loadUrl("javascript:(function() {" + "var parent = document.getElementsByTagName('head').item(0);" + "var style = document.createElement('style');" + "style.type = 'text/css';" + "style.innerHTML = window.atob('" + css + "');" + "parent.appendChild(style)" + "})();");
 
         });
 
@@ -349,8 +353,6 @@ public class MainActivity extends AppCompatActivity {
             findViewById(R.id.buttonGoto).setBackgroundColor(Color.parseColor("#FFFFFF"));
             topTitle.setTextColor(Color.parseColor("#000000"));
 
-            findViewById(R.id.nightGlasses).setVisibility(View.GONE);
-
         });
 
     }
@@ -384,6 +386,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
+
+                if(nightMod){
+                    webView.loadUrl("javascript:(function() {" + "var parent = document.getElementsByTagName('head').item(0);" + "var style = document.createElement('style');" + "style.type = 'text/css';" + "style.innerHTML = window.atob('" + css + "');" + "parent.appendChild(style)" + "})();");
+                    findViewById(R.id.nightGlasses).startAnimation(black500ms);
+                }
+
+                findViewById(R.id.nightGlasses).setVisibility(View.INVISIBLE);
                 if (if_load) {
                     if(webView.getUrl().equals("file:///android_asset/web/mainpage.html")){
                         URL_NOW = "";
@@ -405,6 +414,9 @@ public class MainActivity extends AppCompatActivity {
                 super.onPageStarted(view, url, favicon);
 
                 topTitle.setText(view.getUrl());
+
+                if(nightMod)
+                    findViewById(R.id.nightGlasses).setVisibility(View.VISIBLE);
 
                 if_load = true;
             }
@@ -528,25 +540,26 @@ public class MainActivity extends AppCompatActivity {
 
     //旧版css注入夜间模式，由于闪屏问题，该方法已弃用
     //css注入代码：
-    //webView.loadUrl("javascript:(function() {" + "var parent = document.getElementsByTagName('head').item(0);" + "var style = document.createElement('style');" + "style.type = 'text/css';" + "style.innerHTML = window.atob('" + getNightCss() + "');" + "parent.appendChild(style)" + "})();");
-    /*
-    private String getNightCss(){
-        css = getResources().openRawResource(R.raw.night);
+    //webView.loadUrl("javascript:(function() {" + "var parent = document.getElementsByTagName('head').item(0);" + "var style = document.createElement('style');" + "style.type = 'text/css';" + "style.innerHTML = window.atob('" + css + "');" + "parent.appendChild(style)" + "})();");
+    private void initNightMod(){
+        InputStream in = getResources().openRawResource(R.raw.night);
         byte[] buffer = new byte[0];
         try {
-            buffer = new byte[css.available()];
-            css.read(buffer);
+            buffer = new byte[in.available()];
+            in.read(buffer);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             try {
-                css.close();
+                in.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        return Base64.encodeToString(buffer, Base64.NO_WRAP);
+        css = Base64.encodeToString(buffer, Base64.NO_WRAP);
+        black500ms = new AlphaAnimation(1, 1);
+        black500ms.setDuration(500);
     }
-    */
+
 
 }
