@@ -35,7 +35,7 @@ public class HistoryDataHelper extends MyDataHelper {
     }
 
     //删除单个历史记录
-    public void deleteHistory(String id) {
+    public void deleteHistoryById(String id) {
         getWritableDatabase().delete("history", "id = ?", new String[]{id});
     }
 

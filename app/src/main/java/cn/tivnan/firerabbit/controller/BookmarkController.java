@@ -39,15 +39,26 @@ public class BookmarkController {
      * @param url
      * @return
      */
-    public Boolean addBookmark(String title, String url) {
+    public Boolean addBookmark(int id, String title, String url) {
 
         if (isNoExistBoomark(url)) {
             ContentValues values = new ContentValues();
+            values.put("id", id);
             values.put("title", title);
             values.put("url", url);
             return bookmarkDBHelper.insertBookmark(values) > 1;
         }
         return false;
+    }
+
+    public void addBookmarkList(List<Bookmark> bookmarkList) {
+        for (int i = 0; i<bookmarkList.size(); i++) {
+            ContentValues values = new ContentValues();
+            values.put("id", bookmarkList.get(i).getId());
+            values.put("title", bookmarkList.get(i).getName());
+            values.put("url", bookmarkList.get(i).getUrl());
+            bookmarkDBHelper.insertBookmark(values);
+        }
     }
 
     //将书签填充进BookmarkList
@@ -57,7 +68,7 @@ public class BookmarkController {
         if (cursor.moveToFirst()){
             do {
                 //遍历Cursor对象，取出数据装进bookList
-                bookmarkList.add(new Bookmark(cursor.getString(cursor.getColumnIndex("title")),cursor.getString(cursor.getColumnIndex("url"))));
+                bookmarkList.add(new Bookmark(cursor.getInt(cursor.getColumnIndex("id")), cursor.getString(cursor.getColumnIndex("title")),cursor.getString(cursor.getColumnIndex("url"))));
             } while (cursor.moveToNext());
         }
         Collections.reverse(bookmarkList);

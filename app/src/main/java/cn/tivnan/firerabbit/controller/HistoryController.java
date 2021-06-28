@@ -57,8 +57,8 @@ public class HistoryController {
 
     //删除单条历史记录
     public void removeHistoryById(int pos) {
-        historyDataHelper.deleteHistory(historyList.get(pos).getId());//从数据库中删除
-        historyList.remove(pos);//别忘了更新bookList中的数据，不执行这一步的话adapter中的bookList不会更新的
+        historyDataHelper.deleteHistoryById(historyList.get(pos).getId());//从数据库中删除
+        historyList.remove(pos);//别忘了更新bookList中的数据，不执行这一步的话adapter中的historyList不会更新的
     }
 
 

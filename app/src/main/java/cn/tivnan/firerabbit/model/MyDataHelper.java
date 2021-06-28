@@ -12,7 +12,7 @@ public class MyDataHelper extends SQLiteOpenHelper {
     private Context mContext;
     //创建书签sql
     public static final String CREATE_bookmarkDB = "create table bookmark(" +
-            "id integer primary key autoincrement," +
+            "id integer primary key," +
             "title text ," +
             "url text)";
     //创建书签sql

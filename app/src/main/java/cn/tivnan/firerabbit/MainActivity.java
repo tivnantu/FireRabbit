@@ -101,7 +101,8 @@ public class MainActivity extends AppCompatActivity {
             //增加书签按钮，把当前页面制作成书签存储起来
             String url = webView.getUrl();
             String title = webView.getTitle();
-            addBookmarkDialog(MainActivity.this, title, url);
+            int id = (int)(System.currentTimeMillis()%1000000000);//取当前时间作为id
+            addBookmarkDialog(MainActivity.this, id, title, url);
         });
 
         findViewById(R.id.buttonMarks).setOnClickListener(v -> {
@@ -470,14 +471,14 @@ public class MainActivity extends AppCompatActivity {
      * @param title
      * @param url
      */
-    private void addBookmarkDialog(Context context, String title, String url) {
+    private void addBookmarkDialog(Context context,int id, String title, String url) {
         AlertDialog.Builder normalDialog = new AlertDialog.Builder(this)
                 .setTitle(title)
                 .setMessage(url)
                 .setCancelable(true);
         normalDialog.setNegativeButton("关闭", null);
         normalDialog.setPositiveButton("确定", (dialog, which) -> {
-            new BookmarkController(context).addBookmark(title, url);
+            new BookmarkController(context).addBookmark(id, title, url);
             Toast.makeText(context, "添加成功", Toast.LENGTH_SHORT).show();
         });
         normalDialog.show();

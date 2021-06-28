@@ -43,6 +43,7 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
         button_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                makeToast("登陆中...");
                 id = String.valueOf(editText_name.getText());
                 password = String.valueOf(editText_password.getText());
                 String address = "http://firerabbit.tivnan.cn/user/signin" + "?id=" + id + "&password=" + password;
@@ -52,14 +53,123 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
         button_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                makeToast("注册中...");
                 id = String.valueOf(editText_name.getText());
                 password = String.valueOf(editText_password.getText());
                 String address = "http://firerabbit.tivnan.cn/user/signup";
                 registerWithOkHttp(address, id, password);
             }
         });
+    }
 
+    //实现登录
+    public void loginWithOkHttp(String address) {
+        HttpUtil.loginWithOkHttp(address, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(LoginOrRegisterActivity.this, "登录失败onFailure，请检查网络是否连接", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
 
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                //得到服务器返回的具体内容
+                String responseData = response.body().string();
+                Gson gson = new Gson();
+                Map map = gson.fromJson(responseData, Map.class);
+                Map data = (Map) map.get("date");
+//                借助runOnUiThread方法进行线程转换，因为回调接口在子线程中运行，子线程内不可以执行任何UI操作
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (map.get("code").equals("200")) {//返回json文件中code=200则登录成功
+                            makeToast("登录成功");
+
+                            //登录成功时将用户信息利用SharedPreferences存储起来（退出登录时将此信息删除），此信息有两个用途
+                            //一是文件的存在与否可以判断用户是否登录
+                            //二是在用户登录的情况下，可以在用户界面展示用户信息
+                            String sessionId = getSessionId(response);
+                            saveUserInfo(String.valueOf(data.get("id")), String.valueOf(data.get("username")), String.valueOf(data.get("password")), sessionId);
+                            //登录成功即跳转到用户界面
+                            openUserPage();
+                        } else {
+                            makeToast("登录失败，请检查id和password");
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    //实现注册
+    public void registerWithOkHttp(String address, String id, String password) {
+        HttpUtil.registerWithOkHttp(address, id, password, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                //对异常情况进行处理
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(LoginOrRegisterActivity.this, "注册失败onFailure，请检查网络是否连接", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                final String responseData = response.body().string();
+                Gson gson = new Gson();
+                Map map = gson.fromJson(responseData, Map.class);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (map.get("code").equals("200")) {
+
+                            makeToast("注册成功");
+                            //注册后跳转到登录界面，此时也要保存用户信息到SharedPreference
+                            String sessionId = getSessionId(response);
+                            saveUserInfo(id, "user" + id, password, sessionId);
+                            openUserPage();
+                        } else {
+                            makeToast("注册失败，该id已注册");
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    private void saveUserInfo(String id, String username, String password, String sessionId) {
+        SharedPreferences.Editor editor = getSharedPreferences("userInfo", MODE_PRIVATE).edit();
+        editor.putString("id", id);
+        editor.putString("username", username);
+        editor.putString("password", password);
+        editor.putString("sessionId", sessionId);
+        editor.apply();
+    }
+
+    private void openUserPage() {
+        Intent intent = new Intent(this, UserActivity.class);
+        startActivity(intent);
+        this.finish();
+    }
+
+    private String getSessionId(Response response) {
+        //保存sessionId
+        Headers headers = response.headers();
+        List<String> cookies = headers.values("Set-Cookie");
+        String session = cookies.get(0);
+        return session.substring(0, session.indexOf(";"));
+    }
+
+    private void makeToast(String toast) {
+        Toast.makeText(LoginOrRegisterActivity.this, toast, Toast.LENGTH_SHORT).show();
     }
 
     private void init() {
@@ -111,109 +221,6 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
 
             }
         });
-    }
-
-    //实现登录
-    public void loginWithOkHttp(String address) {
-        HttpUtil.loginWithOkHttp(address, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(LoginOrRegisterActivity.this, "登录失败onFailure，请检查网络是否连接", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-
-                //得到服务器返回的具体内容
-                String responseData = response.body().string();
-                Gson gson = new Gson();
-                Map map = gson.fromJson(responseData, Map.class);
-                Map data = (Map) map.get("date");
-//                借助runOnUiThread方法进行线程转换，因为回调接口在子线程中运行，子线程内不可以执行任何UI操作
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (map.get("code").equals("200")) {//返回json文件中code=200则登录成功
-                            //保存sessionId
-
-
-                            Toast.makeText(LoginOrRegisterActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
-                            //登录成功时将用户信息利用SharedPreferences存储起来（退出登录时将此信息删除），此信息有两个用途
-                            //一是文件的存在与否可以判断用户是否登录
-                            //二是在用户登录的情况下，可以在用户界面展示用户信息
-                            String sessionId = getSessionId(response);
-                            saveUserInfo(String.valueOf(data.get("id")), String.valueOf(data.get("username")), String.valueOf(data.get("password")), sessionId);
-                            //登录成功即跳转到用户界面
-                            openUserPage();
-                        } else {
-                            Toast.makeText(LoginOrRegisterActivity.this, "登录失败，请检查id和password", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-            }
-        });
-    }
-
-    //实现注册
-    public void registerWithOkHttp(String address, String id, String password) {
-        HttpUtil.registerWithOkHttp(address, id, password, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                //对异常情况进行处理
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-
-                final String responseData = response.body().string();
-                Gson gson = new Gson();
-                Map map = gson.fromJson(responseData, Map.class);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (map.get("code").equals("200")) {
-
-                            Toast.makeText(LoginOrRegisterActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
-
-                            //注册后跳转到登录界面，此时也要保存用户信息到SharedPreference
-                            String sessionId = getSessionId(response);
-                            saveUserInfo(id, "user" + id, password, sessionId);
-                            openUserPage();
-                        } else {
-                            Toast.makeText(LoginOrRegisterActivity.this, "注册失败，该id已注册", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-            }
-        });
-    }
-
-    private void saveUserInfo(String id, String username, String password, String sessionId) {
-        SharedPreferences.Editor editor = getSharedPreferences("userInfo", MODE_PRIVATE).edit();
-        editor.putString("id", id);
-        editor.putString("username", username);
-        editor.putString("password", password);
-        editor.putString("sessionId", sessionId);
-        editor.apply();
-    }
-
-    private void openUserPage() {
-        Intent intent = new Intent(this, UserActivity.class);
-        startActivity(intent);
-        this.finish();
-    }
-
-    private String getSessionId(Response response) {
-        //保存sessionId
-        Headers headers = response.headers();
-        List<String> cookies = headers.values("Set-Cookie");
-        String session = cookies.get(0);
-        return session.substring(0, session.indexOf(";"));
     }
 
 }

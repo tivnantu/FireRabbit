@@ -2,6 +2,7 @@ package cn.tivnan.firerabbit.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -46,20 +47,20 @@ public class UserInfoEditActivity extends AppCompatActivity {
                         if (newPassword.equals(newPasswordCertify)) {
                             //向服务器发送更改用户信息的请求
                             try {
-                                updateUserWithOkHttp(address, id, newUsername, newPassword,sessionId);//请求成功后再更新存在本地的用户信息
+                                updateUserWithOkHttp(address, id, newUsername, newPassword,sessionId);//请求成功后还要更新存在本地的用户信息
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                         } else {
-                            Toast.makeText(v.getContext(), "两次输入的新密码不一致，请重新输入", Toast.LENGTH_SHORT).show();
+                            makeToast("两次输入的新密码不一致，请重新输入");
 //                            ig_edit_new_password.clearContentText();
                             ig_edit_certify_new_password.clearContentText();
                         }
                     } else {
-                        Toast.makeText(v.getContext(), "新密码不能为空", Toast.LENGTH_SHORT).show();
+                        makeToast("新密码不能为空");
                     }
                 } else {
-                    Toast.makeText(v.getContext(), "原密码错误", Toast.LENGTH_SHORT).show();
+                    makeToast("原密码错误");
                     ig_edit_old_password.clearContentText();
                 }
             }
@@ -70,7 +71,7 @@ public class UserInfoEditActivity extends AppCompatActivity {
         HttpUtil.updateUserWithOkHttp(address, id, newUsername, newPassword, sessionId, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-
+                makeToast("更改用户信息失败，请检查网络连接");
             }
 
             @Override
@@ -84,8 +85,8 @@ public class UserInfoEditActivity extends AppCompatActivity {
                         if (map.get("code").equals("200")) {
                             Toast.makeText(UserInfoEditActivity.this, "修改成功", Toast.LENGTH_SHORT).show();
                             //用户信息更新成功后，还要修改本地的sharedPreference中的用户信息
-                            updateUserWithSharedPreference(id, username, newPassword);
-//                            finish();
+                            updateUserWithSharedPreference(id, newUsername, newPassword);
+                            openUserPage();
                         } else {
                             Toast.makeText(UserInfoEditActivity.this, "修改失败", Toast.LENGTH_SHORT).show();
                         }
@@ -95,12 +96,24 @@ public class UserInfoEditActivity extends AppCompatActivity {
         });
     }
 
-    private void updateUserWithSharedPreference(String id, String username, String newPassword) {
+
+
+    private void updateUserWithSharedPreference(String id, String newUsername, String newPassword) {
         SharedPreferences.Editor editor = pref.edit();
         editor.putString("id", id);
-        editor.putString("username", username);
+        editor.putString("username", newUsername);
         editor.putString("password", newPassword);
+        editor.commit();
+    }
 
+    private void openUserPage() {
+        Intent intent = new Intent(this, UserActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void makeToast(String toast){
+        Toast.makeText(this, toast, Toast.LENGTH_SHORT).show();
     }
 
     private void init() {
