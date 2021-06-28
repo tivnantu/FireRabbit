@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import cn.tivnan.firerabbit.R;
@@ -25,6 +26,7 @@ import cn.tivnan.firerabbit.util.CheckEditForButton;
 import cn.tivnan.firerabbit.util.HttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.Headers;
 import okhttp3.Response;
 
 public class LoginOrRegisterActivity extends AppCompatActivity {
@@ -43,7 +45,7 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
             public void onClick(View v) {
                 id = String.valueOf(editText_name.getText());
                 password = String.valueOf(editText_password.getText());
-                String address = "http://firerabbit.tivnan.cn/user/signin"+"?id="+ id +"&password="+password;
+                String address = "http://firerabbit.tivnan.cn/user/signin" + "?id=" + id + "&password=" + password;
                 loginWithOkHttp(address);
             }
         });
@@ -59,10 +61,11 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
 
 
     }
+
     private void init() {
         //添加标题栏返回按钮
         ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null){
+        if (actionBar != null) {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
@@ -98,10 +101,10 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // TODO Auto-generated method stub
-                if(isChecked){
+                if (isChecked) {
                     //如果选中，显示密码
                     editText_password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-                }else{
+                } else {
                     //否则隐藏密码
                     editText_password.setTransformationMethod(PasswordTransformationMethod.getInstance());
                 }
@@ -111,17 +114,18 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
     }
 
     //实现登录
-    public void loginWithOkHttp(String address){
+    public void loginWithOkHttp(String address) {
         HttpUtil.loginWithOkHttp(address, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                            Toast.makeText(LoginOrRegisterActivity.this,"登录失败onFailure，请检查网络是否连接", Toast.LENGTH_SHORT).show();
-                        }
+                        Toast.makeText(LoginOrRegisterActivity.this, "登录失败onFailure，请检查网络是否连接", Toast.LENGTH_SHORT).show();
+                    }
                 });
             }
+
             @Override
             public void onResponse(Call call, Response response) throws IOException {
 
@@ -134,16 +138,20 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (map.get("code").equals("200")){//返回json文件中code=200则登录成功
-                            Toast.makeText(LoginOrRegisterActivity.this,"登录成功",Toast.LENGTH_SHORT).show();
+                        if (map.get("code").equals("200")) {//返回json文件中code=200则登录成功
+                            //保存sessionId
+
+
+                            Toast.makeText(LoginOrRegisterActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
                             //登录成功时将用户信息利用SharedPreferences存储起来（退出登录时将此信息删除），此信息有两个用途
                             //一是文件的存在与否可以判断用户是否登录
                             //二是在用户登录的情况下，可以在用户界面展示用户信息
-                            saveUserInfo(String.valueOf(data.get("id")), String.valueOf(data.get("username")), String.valueOf(data.get("password")));
+                            String sessionId = getSessionId(response);
+                            saveUserInfo(String.valueOf(data.get("id")), String.valueOf(data.get("username")), String.valueOf(data.get("password")), sessionId);
                             //登录成功即跳转到用户界面
                             openUserPage();
-                        }else{
-                            Toast.makeText(LoginOrRegisterActivity.this,"登录失败，请检查id和password", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(LoginOrRegisterActivity.this, "登录失败，请检查id和password", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -152,28 +160,32 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
     }
 
     //实现注册
-    public void registerWithOkHttp(String address, String id, String password){
+    public void registerWithOkHttp(String address, String id, String password) {
         HttpUtil.registerWithOkHttp(address, id, password, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 //对异常情况进行处理
             }
+
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+
                 final String responseData = response.body().string();
                 Gson gson = new Gson();
                 Map map = gson.fromJson(responseData, Map.class);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (map.get("code").equals("200")){
-                            Toast.makeText(LoginOrRegisterActivity.this,"注册成功",Toast.LENGTH_SHORT).show();
+                        if (map.get("code").equals("200")) {
+
+                            Toast.makeText(LoginOrRegisterActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
 
                             //注册后跳转到登录界面，此时也要保存用户信息到SharedPreference
-                            saveUserInfo(id, "user" + id, password);
+                            String sessionId = getSessionId(response);
+                            saveUserInfo(id, "user" + id, password, sessionId);
                             openUserPage();
-                        }else{
-                            Toast.makeText(LoginOrRegisterActivity.this,"注册失败，该id已注册",Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(LoginOrRegisterActivity.this, "注册失败，该id已注册", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -181,11 +193,12 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
         });
     }
 
-    private void saveUserInfo(String id, String username, String password) {
+    private void saveUserInfo(String id, String username, String password, String sessionId) {
         SharedPreferences.Editor editor = getSharedPreferences("userInfo", MODE_PRIVATE).edit();
         editor.putString("id", id);
         editor.putString("username", username);
         editor.putString("password", password);
+        editor.putString("sessionId", sessionId);
         editor.apply();
     }
 
@@ -193,6 +206,14 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
         Intent intent = new Intent(this, UserActivity.class);
         startActivity(intent);
         this.finish();
+    }
+
+    private String getSessionId(Response response) {
+        //保存sessionId
+        Headers headers = response.headers();
+        List<String> cookies = headers.values("Set-Cookie");
+        String session = cookies.get(0);
+        return session.substring(0, session.indexOf(";"));
     }
 
 }

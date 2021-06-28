@@ -23,7 +23,7 @@ import okhttp3.Response;
 
 public class UserInfoEditActivity extends AppCompatActivity {
     private ItemGroup ig_edit_username, ig_edit_old_password, ig_edit_new_password, ig_edit_certify_new_password, ig_edit_certify;
-    private String id, username, newUsername, password, oldPassword, newPassword, newPasswordCertify, address;
+    private String id, username, newUsername, password, oldPassword, newPassword, newPasswordCertify, address,sessionId;
     SharedPreferences pref;
 
     @Override
@@ -42,11 +42,11 @@ public class UserInfoEditActivity extends AppCompatActivity {
                 newPasswordCertify = ig_edit_certify_new_password.getContentText();
 
                 if (oldPassword.equals(password)) {//不能用==判断
-                    if (! newPassword.trim().isEmpty()) {
+                    if (!newPassword.trim().isEmpty()) {
                         if (newPassword.equals(newPasswordCertify)) {
                             //向服务器发送更改用户信息的请求
                             try {
-                                updateUserWithOkHttp(address, id, newUsername, newPassword);//请求成功后再更新存在本地的用户信息
+                                updateUserWithOkHttp(address, id, newUsername, newPassword,sessionId);//请求成功后再更新存在本地的用户信息
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -66,12 +66,13 @@ public class UserInfoEditActivity extends AppCompatActivity {
         });
     }
 
-    private void updateUserWithOkHttp(String address, String id, String newUsername, String newPassword) throws JSONException {
-        HttpUtil.updateUserWithOkHttp(address, id, newUsername, newPassword, new Callback() {
+    private void updateUserWithOkHttp(String address, String id, String newUsername, String newPassword, String sessionId) throws JSONException {
+        HttpUtil.updateUserWithOkHttp(address, id, newUsername, newPassword, sessionId, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
 
             }
+
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 final String responseData = response.body().string();
@@ -80,13 +81,13 @@ public class UserInfoEditActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (map.get("code").equals("200")){
-                            Toast.makeText(UserInfoEditActivity.this,"修改成功",Toast.LENGTH_SHORT).show();
+                        if (map.get("code").equals("200")) {
+                            Toast.makeText(UserInfoEditActivity.this, "修改成功", Toast.LENGTH_SHORT).show();
                             //用户信息更新成功后，还要修改本地的sharedPreference中的用户信息
                             updateUserWithSharedPreference(id, username, newPassword);
 //                            finish();
-                        }else{
-                            Toast.makeText(UserInfoEditActivity.this,"修改失败",Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(UserInfoEditActivity.this, "修改失败", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -95,7 +96,7 @@ public class UserInfoEditActivity extends AppCompatActivity {
     }
 
     private void updateUserWithSharedPreference(String id, String username, String newPassword) {
-        SharedPreferences.Editor editor= pref.edit();
+        SharedPreferences.Editor editor = pref.edit();
         editor.putString("id", id);
         editor.putString("username", username);
         editor.putString("password", newPassword);
@@ -109,10 +110,11 @@ public class UserInfoEditActivity extends AppCompatActivity {
         ig_edit_certify_new_password = findViewById(R.id.edit_certify_new_password_ig);
         ig_edit_certify = findViewById(R.id.edit_certify_ig);
 
-        pref= getSharedPreferences("userInfo", MODE_PRIVATE);
+        pref = getSharedPreferences("userInfo", MODE_PRIVATE);
         id = pref.getString("id", "");
         username = pref.getString("username", "");
         password = pref.getString("password", "");
+        sessionId = pref.getString("sessionId", "");
         newUsername = username;
         ig_edit_username.setUsername(username);
 

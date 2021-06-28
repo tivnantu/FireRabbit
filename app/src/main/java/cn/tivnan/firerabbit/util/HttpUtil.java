@@ -22,7 +22,7 @@ public class HttpUtil {
     private static OkHttpClient client = new OkHttpClient();
 
     //登录
-    public static void loginWithOkHttp(String address, okhttp3.Callback callback){
+    public static void loginWithOkHttp(String address, okhttp3.Callback callback) {
         Request request = new Request.Builder()
                 .url(address)
                 .build();
@@ -30,15 +30,15 @@ public class HttpUtil {
     }
 
     //注册
-    public static void registerWithOkHttp(String address, String id, String password, okhttp3.Callback callback){
-        JSONObject jsonObject=new JSONObject();
+    public static void registerWithOkHttp(String address, String id, String password, okhttp3.Callback callback) {
+        JSONObject jsonObject = new JSONObject();
         try {
-                jsonObject.put("id", id);
-                jsonObject.put("username", "user"+id);//用户名在注册时由系统分配
-                jsonObject.put("password", password);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            jsonObject.put("id", id);
+            jsonObject.put("username", "user" + id);//用户名在注册时由系统分配
+            jsonObject.put("password", password);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         String json = jsonObject.toString();
         RequestBody requestBody = RequestBody.create(JSON, json);
@@ -60,18 +60,23 @@ public class HttpUtil {
     }
 
     //修改用户信息
-    public static void updateUserWithOkHttp(String address, String id, String newUsername, String newPassword,okhttp3.Callback callback) throws JSONException {
+    public static void updateUserWithOkHttp(String address,
+                                            String id, String newUsername,
+                                            String newPassword,
+                                            String sessionId,
+                                            okhttp3.Callback callback) throws JSONException {
         JSONObject jsonObject = new JSONObject();
         try {
-                jsonObject.put("id", id);
-                jsonObject.put("username", newUsername);
-                jsonObject.put("password", newPassword);
+            jsonObject.put("id", id);
+            jsonObject.put("username", newUsername);
+            jsonObject.put("password", newPassword);
         } catch (JSONException e) {
-                 e.printStackTrace();
+            e.printStackTrace();
         }
         String json = jsonObject.toString();
         RequestBody requestBody = RequestBody.create(JSON, json);
         Request request = new Request.Builder()
+                .addHeader("cookie", sessionId)
                 .url(address)
                 .post(requestBody)
                 .build();
@@ -79,7 +84,7 @@ public class HttpUtil {
     }
 
     //退出登录
-    public static void logoutWithOkHttp(String address){
+    public static void logoutWithOkHttp(String address) {
         try {
             Request request = new Request.Builder()
                     .url(address)
