@@ -1,7 +1,7 @@
 /*所有元素的背景色都设置为黑夜模式，原来使用#201f26（rgb）会影响celltick资讯详情页里列表项的图片显示，这里改用rgba，有0.8的透明度*/
 *, *:before, *:after {
     box-sizing: inherit;
-    background-color: rgba(32, 32, 32, 0.8) !important;
+    background-color: rgba(20, 20, 20, 0.8) !important;
 }
 
 /*背景颜色和一般字体颜色*/

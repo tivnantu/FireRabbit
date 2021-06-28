@@ -310,6 +310,8 @@ public class MainActivity extends AppCompatActivity {
             findViewById(R.id.buttonGoto).setBackgroundColor(Color.parseColor("#000000"));
             topTitle.setTextColor(Color.parseColor("#646464"));
 
+            findViewById(R.id.nightGlasses).setVisibility(View.VISIBLE);
+
         });
 
         findViewById(R.id.buttonDayMod).setOnClickListener( v -> {
@@ -347,26 +349,10 @@ public class MainActivity extends AppCompatActivity {
             findViewById(R.id.buttonGoto).setBackgroundColor(Color.parseColor("#FFFFFF"));
             topTitle.setTextColor(Color.parseColor("#000000"));
 
+            findViewById(R.id.nightGlasses).setVisibility(View.GONE);
+
         });
 
-    }
-
-    private String getNightCss(){
-        css = getResources().openRawResource(R.raw.night);
-        byte[] buffer = new byte[0];
-        try {
-            buffer = new byte[css.available()];
-            css.read(buffer);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                css.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return Base64.encodeToString(buffer, Base64.NO_WRAP);
     }
 
     private void initWebView(WebView webView) {
@@ -398,23 +384,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-
                 if (if_load) {
                     if(webView.getUrl().equals("file:///android_asset/web/mainpage.html")){
                         URL_NOW = "";
                         topTitle.setText("欢迎使用FireRabbit！");
                         return;
                     }
-
                     URL_NOW = webView.getUrl();
                     topTitle.setText(view.getTitle());
-
-                    if(nightMod)
-                        webView.loadUrl("javascript:(function() {" + "var parent = document.getElementsByTagName('head').item(0);" + "var style = document.createElement('style');" + "style.type = 'text/css';" + "style.innerHTML = window.atob('" + getNightCss() + "');" + "parent.appendChild(style)" + "})();");
-
                     if(invisibleMod)
                         return;
-
                     new HistoryController(MainActivity.this).addHistory(view.getTitle(), view.getUrl());
                     if_load = false;
                 }
@@ -427,13 +406,9 @@ public class MainActivity extends AppCompatActivity {
 
                 topTitle.setText(view.getUrl());
 
-                if(nightMod)
-                    webView.loadUrl("javascript:(function() {" + "var parent = document.getElementsByTagName('head').item(0);" + "var style = document.createElement('style');" + "style.type = 'text/css';" + "style.innerHTML = window.atob('" + getNightCss() + "');" + "parent.appendChild(style)" + "})();");
-
                 if_load = true;
             }
         };
-
 
         //下面这些直接复制就好
         webView.setWebViewClient(webClient);
@@ -550,5 +525,28 @@ public class MainActivity extends AppCompatActivity {
         );
         dialog.show();
     }
+
+    //旧版css注入夜间模式，由于闪屏问题，该方法已弃用
+    //css注入代码：
+    //webView.loadUrl("javascript:(function() {" + "var parent = document.getElementsByTagName('head').item(0);" + "var style = document.createElement('style');" + "style.type = 'text/css';" + "style.innerHTML = window.atob('" + getNightCss() + "');" + "parent.appendChild(style)" + "})();");
+    /*
+    private String getNightCss(){
+        css = getResources().openRawResource(R.raw.night);
+        byte[] buffer = new byte[0];
+        try {
+            buffer = new byte[css.available()];
+            css.read(buffer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                css.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return Base64.encodeToString(buffer, Base64.NO_WRAP);
+    }
+    */
 
 }
