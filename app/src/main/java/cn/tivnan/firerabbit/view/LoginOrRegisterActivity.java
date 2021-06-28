@@ -33,7 +33,7 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
     private EditText editText_name, editText_password;
     private Button button_login, button_register;
     private CheckBox checkBox;
-    String id, username, password;
+    String id, password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

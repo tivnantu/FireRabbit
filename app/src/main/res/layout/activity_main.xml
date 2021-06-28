@@ -197,6 +197,18 @@
                 app:iconTint="#646464" />
 
             <Button
+                android:id="@+id/buttonDayMod"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:backgroundTint="@color/white"
+                android:gravity="center"
+                android:stateListAnimator="@null"
+                app:icon="@drawable/nightmod_cancel"
+                app:iconGravity="textEnd"
+                app:iconTint="#646464" />
+
+            <Button
                 android:id="@+id/buttonNothing"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

@@ -9,11 +9,13 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Selection;
 import android.text.Spannable;
+import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.DownloadListener;
@@ -31,10 +33,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
+import java.io.InputStream;
 
 import cn.tivnan.firerabbit.controller.BookmarkController;
 import cn.tivnan.firerabbit.controller.HistoryController;
@@ -51,7 +50,8 @@ public class MainActivity extends AppCompatActivity {
     private WebView webView;
     private String URL_NOW;
     private EditText topTitle;
-    private boolean invisibleMod, isLogged;
+    private boolean invisibleMod, nightMod;
+    private InputStream css;
 
     @Override
     protected void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         initWebView(webView);
         topTitle = findViewById(R.id.url);
         invisibleMod = false;
+        nightMod = false;
 
         //返回按钮，返回后一个网页
         findViewById(R.id.buttonBack).setOnClickListener(v -> {
@@ -150,6 +151,14 @@ public class MainActivity extends AppCompatActivity {
                 }else{
                     findViewById(R.id.buttonVisibleMod).setVisibility(View.GONE);
                     findViewById(R.id.buttonInvisibleMod).setVisibility(View.VISIBLE);
+                }
+
+                if(nightMod){
+                    findViewById(R.id.buttonNightMod).setVisibility(View.GONE);
+                    findViewById(R.id.buttonDayMod).setVisibility(View.VISIBLE);
+                }else{
+                    findViewById(R.id.buttonNightMod).setVisibility(View.VISIBLE);
+                    findViewById(R.id.buttonDayMod).setVisibility(View.GONE);
                 }
 
         });
@@ -266,6 +275,98 @@ public class MainActivity extends AppCompatActivity {
             startActivity(resolveIntent);// 启动目标应用
         });
 
+        findViewById(R.id.buttonNightMod).setOnClickListener( v -> {
+            nightMod = true;
+            findViewById(R.id.buttonDayMod).setVisibility(View.VISIBLE);
+            findViewById(R.id.buttonNightMod).setVisibility(View.GONE);
+            createDialog("您已进入夜间模式");
+
+            findViewById(R.id.buttonAddMark).setBackgroundColor(Color.parseColor("#000000"));
+            findViewById(R.id.buttonMarks).setBackgroundColor(Color.parseColor("#000000"));
+            findViewById(R.id.buttonHistory).setBackgroundColor(Color.parseColor("#000000"));
+            findViewById(R.id.buttonDownload).setBackgroundColor(Color.parseColor("#000000"));
+            findViewById(R.id.buttonVisibleMod).setBackgroundColor(Color.parseColor("#000000"));
+            findViewById(R.id.buttonInvisibleMod).setBackgroundColor(Color.parseColor("#000000"));
+            findViewById(R.id.menu3).setBackgroundColor(Color.parseColor("#000000"));
+            findViewById(R.id.buttonShare).setBackgroundColor(Color.parseColor("#000000"));
+            findViewById(R.id.buttonNightMod).setBackgroundColor(Color.parseColor("#000000"));
+            findViewById(R.id.buttonDayMod).setBackgroundColor(Color.parseColor("#000000"));
+            findViewById(R.id.buttonNothing).setBackgroundColor(Color.parseColor("#000000"));
+            findViewById(R.id.buttonQuit).setBackgroundColor(Color.parseColor("#000000"));
+            findViewById(R.id.buttonUser).setBackgroundColor(Color.parseColor("#000000"));
+            findViewById(R.id.menu2).setBackgroundColor(Color.parseColor("#000000"));
+            findViewById(R.id.buttonBack).setBackgroundColor(Color.parseColor("#000000"));
+            findViewById(R.id.buttonForward).setBackgroundColor(Color.parseColor("#000000"));
+            findViewById(R.id.buttonHome).setBackgroundColor(Color.parseColor("#000000"));
+            findViewById(R.id.buttonPages).setBackgroundColor(Color.parseColor("#000000"));
+            findViewById(R.id.buttonMore).setBackgroundColor(Color.parseColor("#000000"));
+            findViewById(R.id.buttonLess).setBackgroundColor(Color.parseColor("#000000"));
+            findViewById(R.id.menu1).setBackgroundColor(Color.parseColor("#000000"));
+            webView.setBackgroundColor(Color.parseColor("#202020"));
+
+            findViewById(R.id.topLayout).setBackgroundColor(Color.parseColor("#000000"));
+            findViewById(R.id.buttonRefresh).setBackgroundColor(Color.parseColor("#000000"));
+            findViewById(R.id.url).setBackgroundColor(Color.parseColor("#000000"));
+            findViewById(R.id.buttonGoto).setBackgroundColor(Color.parseColor("#000000"));
+            topTitle.setTextColor(Color.parseColor("#646464"));
+
+        });
+
+        findViewById(R.id.buttonDayMod).setOnClickListener( v -> {
+            nightMod = false;
+            findViewById(R.id.buttonDayMod).setVisibility(View.GONE);
+            findViewById(R.id.buttonNightMod).setVisibility(View.VISIBLE);
+            createDialog("您已退出夜间模式");
+
+            findViewById(R.id.buttonAddMark).setBackgroundColor(Color.parseColor("#FFFFFF"));
+            findViewById(R.id.buttonMarks).setBackgroundColor(Color.parseColor("#FFFFFF"));
+            findViewById(R.id.buttonHistory).setBackgroundColor(Color.parseColor("#FFFFFF"));
+            findViewById(R.id.buttonDownload).setBackgroundColor(Color.parseColor("#FFFFFF"));
+            findViewById(R.id.buttonVisibleMod).setBackgroundColor(Color.parseColor("#FFFFFF"));
+            findViewById(R.id.buttonInvisibleMod).setBackgroundColor(Color.parseColor("#FFFFFF"));
+            findViewById(R.id.menu3).setBackgroundColor(Color.parseColor("#FFFFFF"));
+            findViewById(R.id.buttonShare).setBackgroundColor(Color.parseColor("#FFFFFF"));
+            findViewById(R.id.buttonNightMod).setBackgroundColor(Color.parseColor("#FFFFFF"));
+            findViewById(R.id.buttonDayMod).setBackgroundColor(Color.parseColor("#FFFFFF"));
+            findViewById(R.id.buttonNothing).setBackgroundColor(Color.parseColor("#FFFFFF"));
+            findViewById(R.id.buttonQuit).setBackgroundColor(Color.parseColor("#FFFFFF"));
+            findViewById(R.id.buttonUser).setBackgroundColor(Color.parseColor("#FFFFFF"));
+            findViewById(R.id.menu2).setBackgroundColor(Color.parseColor("#FFFFFF"));
+            findViewById(R.id.buttonBack).setBackgroundColor(Color.parseColor("#FFFFFF"));
+            findViewById(R.id.buttonForward).setBackgroundColor(Color.parseColor("#FFFFFF"));
+            findViewById(R.id.buttonHome).setBackgroundColor(Color.parseColor("#FFFFFF"));
+            findViewById(R.id.buttonPages).setBackgroundColor(Color.parseColor("#FFFFFF"));
+            findViewById(R.id.buttonMore).setBackgroundColor(Color.parseColor("#FFFFFF"));
+            findViewById(R.id.buttonLess).setBackgroundColor(Color.parseColor("#FFFFFF"));
+            findViewById(R.id.menu1).setBackgroundColor(Color.parseColor("#FFFFFF"));
+            webView.setBackgroundColor(Color.parseColor("#FFFFFF"));
+
+            findViewById(R.id.topLayout).setBackgroundColor(Color.parseColor("#FFFFFF"));
+            findViewById(R.id.buttonRefresh).setBackgroundColor(Color.parseColor("#FFFFFF"));
+            findViewById(R.id.url).setBackgroundColor(Color.parseColor("#FFFFFF"));
+            findViewById(R.id.buttonGoto).setBackgroundColor(Color.parseColor("#FFFFFF"));
+            topTitle.setTextColor(Color.parseColor("#000000"));
+
+        });
+
+    }
+
+    private String getNightCss(){
+        css = getResources().openRawResource(R.raw.night);
+        byte[] buffer = new byte[0];
+        try {
+            buffer = new byte[css.available()];
+            css.read(buffer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                css.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return Base64.encodeToString(buffer, Base64.NO_WRAP);
     }
 
     private void initWebView(WebView webView) {
@@ -281,6 +382,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (url.startsWith("http://") || url.startsWith("https://")) {
                     // webView.loadDataWithBaseURL("file:///android_asset/web", html, "text/html", "UTF-8", null);
+
                     if_load=false;
                     webView.loadUrl(url);
                     return true;
@@ -307,6 +409,9 @@ public class MainActivity extends AppCompatActivity {
                     URL_NOW = webView.getUrl();
                     topTitle.setText(view.getTitle());
 
+                    if(nightMod)
+                        webView.loadUrl("javascript:(function() {" + "var parent = document.getElementsByTagName('head').item(0);" + "var style = document.createElement('style');" + "style.type = 'text/css';" + "style.innerHTML = window.atob('" + getNightCss() + "');" + "parent.appendChild(style)" + "})();");
+
                     if(invisibleMod)
                         return;
 
@@ -321,6 +426,9 @@ public class MainActivity extends AppCompatActivity {
                 super.onPageStarted(view, url, favicon);
 
                 topTitle.setText(view.getUrl());
+
+                if(nightMod)
+                    webView.loadUrl("javascript:(function() {" + "var parent = document.getElementsByTagName('head').item(0);" + "var style = document.createElement('style');" + "style.type = 'text/css';" + "style.innerHTML = window.atob('" + getNightCss() + "');" + "parent.appendChild(style)" + "})();");
 
                 if_load = true;
             }
