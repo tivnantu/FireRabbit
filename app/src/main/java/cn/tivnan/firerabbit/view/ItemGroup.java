@@ -26,12 +26,15 @@ public class ItemGroup extends FrameLayout {//实现ItemGroup
         return contentEdt;
     }
 
-//    public void setId(String id) {
-//        contentEdt.setText(id);
-//    }
-//    public void setUsername(String username) {
-//        contentEdt.setText(username);
-//    }
+    public void setUsername(String username) {
+        contentEdt.setText(username);
+    }
+    public String getContentText() {
+        return String.valueOf(contentEdt.getText());
+    }
+    public void clearContentText() {
+        contentEdt.setText("");
+    }
 
     public ItemGroup(@NonNull Context context) {
         super(context);
@@ -83,7 +86,7 @@ public class ItemGroup extends FrameLayout {//实现ItemGroup
         String hintContent = typedArray.getString(R.styleable.ItemGroup_edt_hint_content);
         int hintColor = typedArray.getColor(R.styleable.ItemGroup_edt_hint_text_color, defaultHintColor);
         //默认输入框可以编辑
-        boolean isEditable = typedArray.getBoolean(R.styleable.ItemGroup_isEditable, true);
+        boolean isEditable = typedArray.getBoolean(R.styleable.ItemGroup_isEditable, false);
         //向右的箭头图标是否可见，默认可见
         boolean showJtIcon = typedArray.getBoolean(R.styleable.ItemGroup_jt_visible, true);
         typedArray.recycle();

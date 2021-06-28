@@ -139,12 +139,8 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
                             //登录成功时将用户信息利用SharedPreferences存储起来（退出登录时将此信息删除），此信息有两个用途
                             //一是文件的存在与否可以判断用户是否登录
                             //二是在用户登录的情况下，可以在用户界面展示用户信息
-                            SharedPreferences.Editor editor = getSharedPreferences("userInfo", MODE_PRIVATE).edit();
-                            editor.putString("id", String.valueOf(data.get("id")));
-                            editor.putString("username", String.valueOf(data.get("username")));
-                            editor.putString("password", String.valueOf(data.get("password")));
-                            editor.apply();
-
+                            saveUserInfo(String.valueOf(data.get("id")), String.valueOf(data.get("username")), String.valueOf(data.get("password")));
+                            //登录成功即跳转到用户界面
                             openUserPage();
                         }else{
                             Toast.makeText(LoginOrRegisterActivity.this,"登录失败，请检查id和password", Toast.LENGTH_SHORT).show();
@@ -172,6 +168,9 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
                     public void run() {
                         if (map.get("code").equals("200")){
                             Toast.makeText(LoginOrRegisterActivity.this,"注册成功",Toast.LENGTH_SHORT).show();
+
+                            //注册后跳转到登录界面，此时也要保存用户信息到SharedPreference
+                            saveUserInfo(id, "user" + id, password);
                             openUserPage();
                         }else{
                             Toast.makeText(LoginOrRegisterActivity.this,"注册失败，该id已注册",Toast.LENGTH_SHORT).show();
@@ -180,6 +179,14 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    private void saveUserInfo(String id, String username, String password) {
+        SharedPreferences.Editor editor = getSharedPreferences("userInfo", MODE_PRIVATE).edit();
+        editor.putString("id", id);
+        editor.putString("username", username);
+        editor.putString("password", password);
+        editor.apply();
     }
 
     private void openUserPage() {

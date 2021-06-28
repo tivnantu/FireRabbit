@@ -3,6 +3,7 @@ package cn.tivnan.firerabbit.view;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -29,7 +30,7 @@ public class UserActivity extends AppCompatActivity {
         ig_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+               openUserInfoEditPage();
             }
         });
         //进入书签页面
@@ -88,5 +89,10 @@ public class UserActivity extends AppCompatActivity {
         password = pref.getString("password", "");
         tv_id.setText("ID: "+id);
         tv_username.setText("昵称: "+username);
+    }
+
+    private void openUserInfoEditPage() {
+        Intent intent = new Intent(this, UserInfoEditActivity.class);
+        startActivity(intent);
     }
 }

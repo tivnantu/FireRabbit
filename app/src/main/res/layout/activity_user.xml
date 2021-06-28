@@ -71,7 +71,6 @@
         android:id="@+id/bookmark_ig"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:isEditable="false"
         app:paddingLeft="15dp"
         app:title="书签" />
 
@@ -79,7 +78,6 @@
         android:id="@+id/history_ig"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:isEditable="false"
         app:paddingLeft="15dp"
         app:title="历史" />
 
@@ -87,7 +85,6 @@
         android:id="@+id/sync_ig"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:isEditable="false"
         app:paddingLeft="15dp"
         app:title="云同步" />
 
@@ -95,7 +92,6 @@
         android:id="@+id/logout_ig"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:isEditable="false"
         app:jt_visible="false"
         app:paddingLeft="15dp"
         app:title="退出登录" />

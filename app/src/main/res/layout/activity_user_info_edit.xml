@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+    <cn.tivnan.firerabbit.view.TitleLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titlelayout_title="修改资料"/>
+
+    <cn.tivnan.firerabbit.view.ItemGroup
+        android:id="@+id/edit_username_ig"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:isEditable="true"
+        app:jt_visible="false"
+        app:paddingLeft="15dp"
+        app:title="昵称" />
+
+    <cn.tivnan.firerabbit.view.ItemGroup
+        android:id="@+id/edit_old_password_ig"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:isEditable="true"
+        app:jt_visible="false"
+        app:paddingLeft="15dp"
+        app:title="原密码" />
+
+    <cn.tivnan.firerabbit.view.ItemGroup
+        android:id="@+id/edit_new_password_ig"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:isEditable="true"
+        app:jt_visible="false"
+        app:paddingLeft="15dp"
+        app:title="新密码" />
+
+    <cn.tivnan.firerabbit.view.ItemGroup
+        android:id="@+id/edit_certify_new_password_ig"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:isEditable="true"
+        app:jt_visible="false"
+        app:paddingLeft="15dp"
+        app:title="确认密码" />
+
+    <cn.tivnan.firerabbit.view.ItemGroup
+        android:id="@+id/edit_certify_ig"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:jt_visible="false"
+        app:paddingLeft="15dp"
+        app:title="提交" />
+
+
+</LinearLayout>
