@@ -8,6 +8,23 @@
     android:backgroundTint="@color/black"
     tools:context=".MainActivity">
 
+    <WebView
+        android:id="@+id/webview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:backgroundTint="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintTop_toBottomOf="@+id/topLayout"></WebView>
+
+    <LinearLayout
+        android:id="@+id/nightGlasses"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black"
+        android:backgroundTint="@color/black"
+        android:orientation="vertical"
+        android:visibility="gone"></LinearLayout>
+
     <LinearLayout
         android:id="@+id/topLayout"
         android:layout_width="match_parent"
@@ -58,26 +75,6 @@
             app:iconGravity="textEnd"
             app:iconTint="#03A9F4" />
 
-    </LinearLayout>
-
-    <WebView
-        android:id="@+id/webview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="40dp"
-        android:backgroundTint="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-        app:layout_constraintTop_toBottomOf="@+id/topLayout"></WebView>
-
-    <LinearLayout
-        android:id="@+id/nightGlasses"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="40dp"
-        android:background="@color/black"
-        android:backgroundTint="@color/black"
-        android:orientation="vertical"
-        android:visibility="gone">
     </LinearLayout>
 
     <LinearLayout
