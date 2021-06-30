@@ -17,6 +17,7 @@ import android.text.Spannable;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.DownloadListener;
+import android.webkit.JavascriptInterface;
 import android.webkit.URLUtil;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -35,6 +36,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 
 import cn.tivnan.firerabbit.controller.BookmarkController;
 import cn.tivnan.firerabbit.controller.HistoryController;
@@ -42,6 +44,7 @@ import cn.tivnan.firerabbit.view.BookmarkActivity;
 import cn.tivnan.firerabbit.view.HistoryActivity;
 import cn.tivnan.firerabbit.view.LoginOrRegisterActivity;
 import cn.tivnan.firerabbit.view.UserActivity;
+import cn.tivnan.firerabbit.view.ViewPagerActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -52,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
     private String URL_NOW;
     private EditText topTitle;
     private boolean invisibleMod, isLogged;
+    private ArrayList<String> listimg;
+    private WebSettings wv;
 
     @Override
     protected void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
@@ -268,8 +273,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+//    @SuppressLint("JavascriptInterface")
+//    @JavascriptInterface
     private void initWebView(WebView webView) {
 
+        listimg = new ArrayList<>();
+        wv = webView.getSettings();
+        wv.setJavaScriptEnabled(true);
+        //绑定javasrcipt接口，imagelistener为接口别名
+        webView.addJavascriptInterface(new JavascriptInterface(this), "imagelistener");
         WebViewClient webClient = new WebViewClient() {
 
             boolean if_load;
@@ -279,26 +291,29 @@ public class MainActivity extends AppCompatActivity {
             // }
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if (url.startsWith("http://") || url.startsWith("https://")) {
-                    // webView.loadDataWithBaseURL("file:///android_asset/web", html, "text/html", "UTF-8", null);
-                    if_load=false;
-                    webView.loadUrl(url);
-                    return true;
-                } else {
-                    // val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                    // startActivity(intent)
-
-                }
-                return true;
+//                if (url.startsWith("http://") || url.startsWith("https://")) {
+//                    // webView.loadDataWithBaseURL("file:///android_asset/web", html, "text/html", "UTF-8", null);
+//                    if_load=false;
+//                    webView.loadUrl(url);
+//                    return true;
+//                } else {
+//                    // val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+//                    // startActivity(intent)
+//
+//                }
+//                return true;
+                webView.loadUrl(url);
+                return super.shouldOverrideUrlLoading(view, url);
             }
 
             //页面完成即加入历史记录
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
+                addImageListener();
 
                 if (if_load) {
-                    if(webView.getUrl().equals("file:///android_asset/web/mainpage.html")){
+                    if (webView.getUrl().equals("file:///android_asset/web/mainpage.html")) {
                         URL_NOW = "";
                         topTitle.setText("欢迎使用FireRabbit！");
                         return;
@@ -307,7 +322,7 @@ public class MainActivity extends AppCompatActivity {
                     URL_NOW = webView.getUrl();
                     topTitle.setText(view.getTitle());
 
-                    if(invisibleMod)
+                    if (invisibleMod)
                         return;
 
                     new HistoryController(MainActivity.this).addHistory(view.getTitle(), view.getUrl());
@@ -367,6 +382,49 @@ public class MainActivity extends AppCompatActivity {
         webView.setFitsSystemWindows(true);
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         webView.loadUrl(HOME_URL);
+    }
+
+
+    private void addImageListener(){
+
+        //遍历页面中所有img的节点，因为节点里面的图片的url即objs[i].src，保存所有图片的src.
+        //为每个图片设置点击事件，objs[i].onclick
+        webView.loadUrl("javascript:(function(){" +
+                "var objs = document.getElementsByTagName(\"img\"); " +
+                "for(var i=0;i<objs.length;i++) " +
+                "{" +
+                "window.imagelistner.readImageUrl(objs[i].src); " +
+                " objs[i].onclick=function() " +
+                " { "+
+                " window.imagelistner.openImage(this.src); " +
+                " } " +
+                "}" +
+                "})()");
+    }
+
+    class JavascriptInterface {
+        private Context context;
+        public JavascriptInterface(Context context) {
+            this.context = context;
+        }
+        @android.webkit.JavascriptInterface
+        public void readImageUrl(String img) { //把所有图片的url保存在ArrayList<String>中
+            listimg.add(img);
+        }
+        @android.webkit.JavascriptInterface //对于targetSdkVersion>=17的，要加这个声明
+        public void openImage(String clickimg)//点击图片所调用到的函数
+        {
+            int index = 0;
+            for(String url:listimg)
+                if(url.equals(clickimg)) index = listimg.indexOf(clickimg);//获取点击图片在整个页面图片中的位置
+            Intent intent = new Intent();
+            Bundle bundle = new Bundle();
+            bundle.putStringArrayList("list_image",listimg);
+            bundle.putInt("index", index);
+            intent.putExtra("bundle", bundle);//将所有图片的url以及点击图片的位置作为参数传给启动的activity
+            intent.setClass(context, ViewPagerActivity.class);
+            context.startActivity(intent);//启动ViewPagerActivity,用于显示图片
+        }
     }
 
     /**

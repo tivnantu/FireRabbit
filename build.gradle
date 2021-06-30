@@ -2,6 +2,8 @@
 buildscript {
     ext.kotlin_version = "1.5.10"
     repositories {
+        maven { url "https://www.jitpack.io" }
+
         maven {
             //jcenter和central的代理仓库
             url 'https://maven.aliyun.com/repository/public/'
@@ -28,6 +30,8 @@ buildscript {
 
 allprojects {
     repositories {
+        maven { url "https://www.jitpack.io" }
+
         maven {
             //jcenter和central的代理仓库
             url 'https://maven.aliyun.com/repository/public/'

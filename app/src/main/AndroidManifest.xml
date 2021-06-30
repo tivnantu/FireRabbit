@@ -36,6 +36,7 @@
         <activity
             android:name=".view.BookmarkActivity"
             android:theme="@style/AppTheme.NoActionBar"  />
+        <activity android:name=".view.ViewPagerActivity" />
         <activity
             android:name=".MainActivity">
             <intent-filter>

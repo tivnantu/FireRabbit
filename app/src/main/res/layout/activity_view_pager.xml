@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    >
+<!--    android:context="activity.ShowImageFromWebActivity"-->
+   <cn.tivnan.firerabbit.view.HackViewPager
+       android:id="@+id/view_pager"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent" >
+   </cn.tivnan.firerabbit.view.HackViewPager>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
