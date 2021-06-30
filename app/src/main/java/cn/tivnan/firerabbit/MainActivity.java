@@ -281,7 +281,7 @@ public class MainActivity extends AppCompatActivity {
         wv = webView.getSettings();
         wv.setJavaScriptEnabled(true);
         //绑定javasrcipt接口，imagelistener为接口别名
-        webView.addJavascriptInterface(new JavascriptInterface(this), "imagelistener");
+        webView.addJavascriptInterface(new JavascriptInterface(this), "imagelistner");
         WebViewClient webClient = new WebViewClient() {
 
             boolean if_load;
@@ -310,7 +310,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                addImageListener();
+                addImageListner();
 
                 if (if_load) {
                     if (webView.getUrl().equals("file:///android_asset/web/mainpage.html")) {
@@ -385,7 +385,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void addImageListener(){
+    private void addImageListner(){
 
         //遍历页面中所有img的节点，因为节点里面的图片的url即objs[i].src，保存所有图片的src.
         //为每个图片设置点击事件，objs[i].onclick

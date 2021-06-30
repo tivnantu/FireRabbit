@@ -17,7 +17,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import cn.tivnan.firerabbit.R;
-////import uk.co.senab.photoview.PhotoView;
+//import uk.co.senab.photoview.PhotoView;
 //import com.github.chrisbanes.photoview.PhotoView;
 
 
@@ -34,9 +34,15 @@ public class ViewPagerActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_view_pager);
+
         mViewPager = (HackViewPager) findViewById(R.id.view_pager);
-        setContentView(mViewPager);
+//        if(mViewPager.getParent()!=null){
+//            ((ViewGroup) mViewPager.getParent()).removeView(mViewPager);
+//        }
+//        setContentView(mViewPager);
+
         bundle = getIntent().getBundleExtra("bundle");
         listimg = bundle.getStringArrayList("list_image");
         index = bundle.getInt("index");
