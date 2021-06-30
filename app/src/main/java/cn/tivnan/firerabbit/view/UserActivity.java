@@ -1,12 +1,8 @@
 package cn.tivnan.firerabbit.view;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -15,18 +11,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import cn.tivnan.firerabbit.R;
 import cn.tivnan.firerabbit.controller.BookmarkController;
 import cn.tivnan.firerabbit.entity.Bookmark;
-import cn.tivnan.firerabbit.entity.History;
+import cn.tivnan.firerabbit.entity.BookmarkVO;
 import cn.tivnan.firerabbit.util.HttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -69,47 +73,76 @@ public class UserActivity extends AppCompatActivity {
         ig_sync.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder buider = getAlertDialogBuider();
-                buider.setIcon(R.drawable.logo);
-                buider.setTitle("云同步");
-                buider.setMessage("云同步将把本地数据同步到云端，同时将云端数据保存到本地");
-                buider.setPositiveButton("继续", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+//                AlertDialog.Builder buider = getAlertDialogBuider();
+//                buider.setIcon(R.drawable.logo);
+//                buider.setTitle("云同步");
+//                buider.setMessage("云同步将把本地数据同步到云端，同时将云端数据保存到本地");
+//                buider.setPositiveButton("继续", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
                         String address = "http://firerabbit.tivnan.cn/bookmark/sync";
                         HttpUtil.syncWithOkHttp(address, getBookmarkList(), sessionId, new Callback() {
                             @Override
                             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                                makeToast("云同步失败，请检查网络连接");
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        makeToast("云同步失败，请检查网络连接");
+                                    }
+                                });
                             }
                             @Override
                             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                                 //将服务器返回的用户账户的bookmark数据存储到本地数据库
                                 String responseData = response.body().string();
-                                Gson gson = new Gson();
-                                Map map = gson.fromJson(responseData, Map.class);
-                                List<Bookmark> bookmarkList = (List<Bookmark>) map.get("date");//TODO 检验是否可行
-                                BookmarkController bookmarkController = getBookmarkController();
-                                bookmarkController.addBookmarkList(bookmarkList);
 
+//                                Gson gson = new Gson();
+//                                Map map = gson.fromJson(responseData, Map.class);
+//                                List<Bookmark> bookmarkList = (List<Bookmark>) map.get("date");
+//                                BookmarkController bookmarkController = getBookmarkController();
+//                                bookmarkController.addBookmarkList(bookmarkList);
+
+//                                Gson gson = new Gson();
+//                                Map map = gson.fromJson(responseData, Map.class);
+//                                Map bookmarkMap = (Map) map.get("date");
+//                                BookmarkController bookmarkController = getBookmarkController();
+//                                for (int i = 0; i<bookmarkMap.size(); i++) {
+//                                    Bookmark bookmark = (Bookmark) bookmarkMap.get(i);
+//                                    bookmarkController.addBookmarkObj(bookmark);
+//                                }
+                                JsonObject jsonObject = new JsonParser().parse(responseData).getAsJsonObject();//TODO 有bug
+                                if (jsonObject.get("date") != null) {
+                                    JsonArray jsonArray = jsonObject.getAsJsonArray("date");
+                                    Gson gson = new Gson();
+                                    BookmarkController bookmarkController = getBookmarkController();
+                                    for (JsonElement bookmark : jsonArray) {
+                                        BookmarkVO bookmarkvo = gson.fromJson(bookmark, new TypeToken<BookmarkVO>(){}.getType());
+                                        bookmarkController.addBookmarkObj(bookmarkvo);
+                                    }
+                                }
                                 runOnUiThread(new Runnable() {
+                                    @Override
                                     public void run() {
+                                        if (jsonObject.get("code").equals("200")) {//返回json文件中code=200则登录成功
                                         makeToast("云同步成功");
+                                    } else {
+                                        makeToast("云同步失败");
+                                    }
                                     }
                                 });
                             }
                         });
                     }
                 });
-                buider.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                });
-                buider.show();
-
-            }
-        });
+//                buider.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                    }
+//                });
+//                buider.show();
+//
+//            }
+//        });
 
         //退出登录
         ig_logout.setOnClickListener(new View.OnClickListener() {

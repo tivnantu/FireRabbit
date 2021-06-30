@@ -110,14 +110,14 @@ public class HttpUtil {
             e.printStackTrace();
         }
         String json = jsonObject.toString();
-        RequestBody requestBody = RequestBody.create(JSON, json);
+//        RequestBody requestBody = RequestBody.create(JSON, json);
+        RequestBody requestBody = RequestBody.Companion.create(json, JSON);
         Request request = new Request.Builder()
-                .addHeader("cooike", sessionId)
+                .addHeader("cookie", sessionId)
                 .url(address)
                 .post(requestBody)
                 .build();
         client.newCall(request).enqueue(callback);
-
     }
 
     //退出登录

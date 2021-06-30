@@ -22,4 +22,8 @@ public class Bookmark {
     public String getUrl() {
         return url;
     }
+
+    public BookmarkVO build() {
+        return new BookmarkVO(id, name, url);
+    }
 }

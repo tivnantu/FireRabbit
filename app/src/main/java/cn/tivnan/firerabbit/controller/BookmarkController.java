@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 import cn.tivnan.firerabbit.entity.Bookmark;
+import cn.tivnan.firerabbit.entity.BookmarkVO;
 import cn.tivnan.firerabbit.model.BookmarkDataHelper;
 
 public class BookmarkController {
@@ -51,14 +52,22 @@ public class BookmarkController {
         return false;
     }
 
-    public void addBookmarkList(List<Bookmark> bookmarkList) {
-        for (int i = 0; i<bookmarkList.size(); i++) {
+    public void addBookmarkObj(BookmarkVO bookmarkvo) {
             ContentValues values = new ContentValues();
-            values.put("id", bookmarkList.get(i).getId());
-            values.put("title", bookmarkList.get(i).getName());
-            values.put("url", bookmarkList.get(i).getUrl());
+            values.put("id", bookmarkvo.getId());
+            values.put("title", bookmarkvo.getTitle());
+            values.put("url", bookmarkvo.getUrl());
             bookmarkDBHelper.insertBookmark(values);
-        }
+    }
+
+    public void addBookmarkList(List<Bookmark> bookmarkList) {
+            for (int i = 0; i<bookmarkList.size(); i++){
+                ContentValues values = new ContentValues();
+                values.put("id", bookmarkList.get(i).getId());
+                values.put("title", bookmarkList.get(i).getName());
+                values.put("url", bookmarkList.get(i).getUrl());
+                bookmarkDBHelper.insertBookmark(values);
+            }
     }
 
     //将书签填充进BookmarkList

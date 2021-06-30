@@ -94,7 +94,8 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
                             //一是文件的存在与否可以判断用户是否登录
                             //二是在用户登录的情况下，可以在用户界面展示用户信息
                             String sessionId = getSessionId(response);
-                            saveUserInfo(String.valueOf(data.get("id")), String.valueOf(data.get("username")), String.valueOf(data.get("password")), sessionId);
+                            String id = String.valueOf(data.get("id"));
+                            saveUserInfo(id.substring(0, id.indexOf(".")), String.valueOf(data.get("username")), String.valueOf(data.get("password")), sessionId);
                             //登录成功即跳转到用户界面
                             openUserPage();
                         } else {
