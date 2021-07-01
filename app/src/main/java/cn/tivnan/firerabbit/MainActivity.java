@@ -1,5 +1,6 @@
 package cn.tivnan.firerabbit;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -24,11 +25,15 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.os.Build.VERSION;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,6 +42,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.List;
 
 import cn.tivnan.firerabbit.controller.BookmarkController;
 import cn.tivnan.firerabbit.controller.HistoryController;
@@ -47,7 +53,6 @@ import cn.tivnan.firerabbit.view.UserActivity;
 import cn.tivnan.firerabbit.view.ViewPagerActivity;
 
 public class MainActivity extends AppCompatActivity {
-
 
     //webView所加载的主页链接
     private final static String HOME_URL = "file:///android_asset/web/mainpage.html";
@@ -60,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        checkPermission();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ActionBar actionBar = getSupportActionBar();
@@ -198,6 +204,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
 
         findViewById(R.id.buttonRefresh).setOnClickListener(v -> {
             webView.reload();
@@ -500,5 +507,53 @@ public class MainActivity extends AppCompatActivity {
         );
         dialog.show();
     }
+
+     /**
+     * Android 6.0 动态权限申请
+     */
+    String[] permissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    List<String> mPermissionList = new ArrayList<>();
+
+    // private ImageView welcomeImg = null;
+    private static final int PERMISSION_REQUEST = 1;
+    // 检查权限
+
+    private void checkPermission() {
+        mPermissionList.clear();
+
+        //判断哪些权限未授予
+        for (int i = 0; i < permissions.length; i++) {
+            if (ContextCompat.checkSelfPermission(this, permissions[i]) != PackageManager.PERMISSION_GRANTED) {
+                mPermissionList.add(permissions[i]);
+            }
+        }
+        /**
+         * 判断是否为空
+         */
+        if (mPermissionList.isEmpty()) {//未授予的权限为空，表示都授予了
+
+        } else {//请求权限方法
+            String[] permissions = mPermissionList.toArray(new String[mPermissionList.size()]);//将List转为数组
+            ActivityCompat.requestPermissions(MainActivity.this, permissions, PERMISSION_REQUEST);
+        }
+    }
+
+    /**
+     * 响应授权
+     * 这里不管用户是否拒绝，都进入首页，不再重复申请权限
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case PERMISSION_REQUEST:
+
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+                break;
+        }
+    }
+
 
 }

@@ -63,7 +63,11 @@ public class ViewPagerActivity extends Activity {
             image = (PhotoView) rootView.findViewById(R.id.photoview);
             indicator = (TextView) rootView.findViewById(R.id.indicator);
             ImageLoader imageloader=ImageLoader.getInstance();
-            imageloader.init(ImageLoaderConfiguration.createDefault(ViewPagerActivity.this));
+            if(!imageloader.isInited())
+            {
+                imageloader.init(ImageLoaderConfiguration.createDefault(ViewPagerActivity.this));
+            }
+//            imageloader.init(ImageLoaderConfiguration.createDefault(ViewPagerActivity.this));
             imageloader.displayImage(listimg.get(position), image);
             CharSequence text = getString(R.string.viewpager_indicator, position+1, count);
             indicator.setText(text);
