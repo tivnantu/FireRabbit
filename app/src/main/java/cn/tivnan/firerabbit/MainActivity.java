@@ -18,6 +18,7 @@ import android.text.Spannable;
 import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.animation.AlphaAnimation;
 import android.webkit.DownloadListener;
 import android.webkit.URLUtil;
@@ -175,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
-                    topTitle.setText(URL_NOW); //添加这句后实现效果
+                    topTitle.setText(URL_NOW);
                 } else {
                     topTitle.setText(webView.getTitle());
                 }
@@ -274,6 +275,21 @@ public class MainActivity extends AppCompatActivity {
             nightMod = false;
             createDialog("您已退出夜间模式");
             nightModSwitch();
+        });
+
+        findViewById(R.id.main).getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            private int preHeight = 0;
+            @Override
+            public void onGlobalLayout() {
+                int heightDiff = findViewById(R.id.main).getRootView().getHeight() - findViewById(R.id.main).getHeight();
+                System.out.println("height differ = " + heightDiff);
+                //在数据相同时，减少发送重复消息。因为实际上在输入法出现时会多次调用这个onGlobalLayout方法。
+                if (preHeight == heightDiff) {
+                    return;
+                }
+                preHeight = heightDiff;
+                menuFold();
+            }
         });
 
     }
