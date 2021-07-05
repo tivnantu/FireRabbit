@@ -16,12 +16,14 @@ import android.os.Bundle;
 import android.text.Selection;
 import android.text.Spannable;
 import android.util.Base64;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.AlphaAnimation;
 import android.webkit.DownloadListener;
 import android.webkit.URLUtil;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -36,9 +38,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import cn.tivnan.firerabbit.controller.BookmarkController;
 import cn.tivnan.firerabbit.controller.HistoryController;
+import cn.tivnan.firerabbit.util.AdBlocker;
 import cn.tivnan.firerabbit.view.BookmarkActivity;
 import cn.tivnan.firerabbit.view.HistoryActivity;
 import cn.tivnan.firerabbit.view.LoginOrRegisterActivity;
@@ -61,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        AdBlocker.init(this);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
         initNightMod();
@@ -102,12 +108,12 @@ public class MainActivity extends AppCompatActivity {
 
         //添加书签按钮，将当前页面添加到书签
         findViewById(R.id.buttonAddMark).setOnClickListener(v -> {
-            if(webView.getUrl().equals(HOME_URL))
+            if (webView.getUrl().equals(HOME_URL))
                 return;
             //增加书签按钮，把当前页面制作成书签存储起来
             String url = webView.getUrl();
             String title = webView.getTitle();
-            int id = (int)(System.currentTimeMillis()%1000000000);//取当前时间作为id
+            int id = (int) (System.currentTimeMillis() % 1000000000);//取当前时间作为id
             addBookmarkDialog(MainActivity.this, id, title, url);
         });
 
@@ -127,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //用户按钮，跳转到用户界面
-        findViewById(R.id.buttonUser).setOnClickListener(v ->{
+        findViewById(R.id.buttonUser).setOnClickListener(v -> {
             //用户按钮
             //根据userInfo的存在与否判断登录状态，若存在，则为已登录，若不存在，则为未登录
             File file = new File("/data/data/" + getPackageName() + "/shared_prefs/userInfo.xml");
@@ -145,25 +151,25 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.buttonHome).setOnClickListener(v -> webView.loadUrl(HOME_URL));
 
         //导航栏展开按钮，展开导航栏
-        findViewById(R.id.buttonMore).setOnClickListener(v ->{//实际处理button的click事件的方法
+        findViewById(R.id.buttonMore).setOnClickListener(v -> {//实际处理button的click事件的方法
             menuUnfold();
         });
 
         //导航栏折叠按钮，折叠导航栏
-        findViewById(R.id.buttonLess).setOnClickListener(v ->{//实际处理button的click事件的方法
+        findViewById(R.id.buttonLess).setOnClickListener(v -> {//实际处理button的click事件的方法
             menuFold();
         });
 
         //退出按钮，退出浏览器
-        findViewById(R.id.buttonQuit).setOnClickListener(v ->{
+        findViewById(R.id.buttonQuit).setOnClickListener(v -> {
             System.exit(0);
         });
 
         //顶部网址栏（搜索框）点击事件
-        topTitle.setOnClickListener( new View.OnClickListener() {
+        topTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!topTitle.getText().toString().equals(webView.getUrl()))
+                if (!topTitle.getText().toString().equals(webView.getUrl()))
                     return;
                 topTitle.setText(URL_NOW); //添加这句后实现效果
                 Spannable content = topTitle.getText();
@@ -191,14 +197,14 @@ public class MainActivity extends AppCompatActivity {
         //顶部跳转按钮，跳转到目标链接或搜索
         findViewById(R.id.buttonGoto).setOnClickListener(v -> {
             String url = topTitle.getText().toString();
-            if(url.equals(webView.getTitle()))
+            if (url.equals(webView.getTitle()))
                 webView.reload();
-            else if(url.startsWith("http://") || url.startsWith("https://"))
+            else if (url.startsWith("http://") || url.startsWith("https://"))
                 webView.loadUrl(url);
-            else if (URLUtil.isNetworkUrl("http://"+url)&&URLUtil.isValidUrl("http://"+url))
-                webView.loadUrl("http://"+url);
-            else if (URLUtil.isNetworkUrl("https://"+url)&&URLUtil.isValidUrl("https://"+url))
-                webView.loadUrl("https://"+url);
+            else if (URLUtil.isNetworkUrl("http://" + url) && URLUtil.isValidUrl("http://" + url))
+                webView.loadUrl("http://" + url);
+            else if (URLUtil.isNetworkUrl("https://" + url) && URLUtil.isValidUrl("https://" + url))
+                webView.loadUrl("https://" + url);
             else
                 webView.loadUrl("https://cn.bing.com/search?q=" + url);
         });
@@ -220,8 +226,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //分享按钮，将当前页面链接复制到剪贴板
-        findViewById(R.id.buttonShare).setOnClickListener(v ->{
-            if(webView.getUrl().equals("file:///android_asset/web/mainpage.html"))
+        findViewById(R.id.buttonShare).setOnClickListener(v -> {
+            if (webView.getUrl().equals("file:///android_asset/web/mainpage.html"))
                 return;
             //获取剪贴板管理器
             ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
@@ -233,12 +239,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //设置文件下载监听器
-        webView.setDownloadListener(new DownloadListener(){
+        webView.setDownloadListener(new DownloadListener() {
             @Override
             public void onDownloadStart(String url, String userAgent, String contentDisposition,
                                         String mimetype, long contentLength) {
                 Uri uri = Uri.parse(url);
-                Intent intent = new Intent(Intent.ACTION_VIEW,uri);
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 startActivity(intent);
                 //添加到下载记录;
             }
@@ -263,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //夜间模式按钮，开启夜间模式
-        findViewById(R.id.buttonNightMod).setOnClickListener( v -> {
+        findViewById(R.id.buttonNightMod).setOnClickListener(v -> {
             nightMod = true;
             createDialog("您已进入夜间模式");
             nightModSwitch();
@@ -271,7 +277,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //夜间模式按钮，关闭夜间模式
-        findViewById(R.id.buttonDayMod).setOnClickListener( v -> {
+        findViewById(R.id.buttonDayMod).setOnClickListener(v -> {
             nightMod = false;
             createDialog("您已退出夜间模式");
             nightModSwitch();
@@ -279,6 +285,7 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.main).getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             private int preHeight = 0;
+
             @Override
             public void onGlobalLayout() {
                 int heightDiff = findViewById(R.id.main).getRootView().getHeight() - findViewById(R.id.main).getHeight();
@@ -295,12 +302,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     private void initWebView(WebView webView) {
 
         WebViewClient webClient = new WebViewClient() {
 
             boolean if_load;
+
+            private Map<String, Boolean> loadedUrls = new HashMap<>();
+
 
             // override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
             //     // return false
@@ -310,7 +319,7 @@ public class MainActivity extends AppCompatActivity {
                 if (url.startsWith("http://") || url.startsWith("https://")) {
                     // webView.loadDataWithBaseURL("file:///android_asset/web", html, "text/html", "UTF-8", null);
 
-                    if_load=false;
+                    if_load = false;
                     webView.loadUrl(url);
                     return true;
                 } else {
@@ -326,21 +335,21 @@ public class MainActivity extends AppCompatActivity {
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
 
-                if(nightMod){
+                if (nightMod) {
                     webView.loadUrl("javascript:(function() {" + "var parent = document.getElementsByTagName('head').item(0);" + "var style = document.createElement('style');" + "style.type = 'text/css';" + "style.innerHTML = window.atob('" + css + "');" + "parent.appendChild(style)" + "})();");
                     findViewById(R.id.nightGlasses).startAnimation(black500ms);
                 }
 
                 findViewById(R.id.nightGlasses).setVisibility(View.INVISIBLE);
                 if (if_load) {
-                    if(webView.getUrl().equals("file:///android_asset/web/mainpage.html")){
+                    if (webView.getUrl().equals("file:///android_asset/web/mainpage.html")) {
                         URL_NOW = "";
                         topTitle.setText("欢迎使用FireRabbit！");
                         return;
                     }
                     URL_NOW = webView.getUrl();
                     topTitle.setText(view.getTitle());
-                    if(invisibleMod)
+                    if (invisibleMod)
                         return;
                     new HistoryController(MainActivity.this).addHistory(view.getTitle(), view.getUrl());
                     if_load = false;
@@ -354,10 +363,33 @@ public class MainActivity extends AppCompatActivity {
 
                 topTitle.setText(view.getUrl());
 
-                if(nightMod)
+                if (nightMod)
                     findViewById(R.id.nightGlasses).setVisibility(View.VISIBLE);
 
                 if_load = true;
+            }
+
+            @Nullable
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+
+//                Log.d("拦截广告", "shouldInterceptRequest: ");
+                Log.d("urlis", url);
+
+                boolean ad;
+                if (!loadedUrls.containsKey(url)) {
+                    ad = AdBlocker.isAd(url);
+                    loadedUrls.put(url, ad);
+                } else {
+                    ad = loadedUrls.get(url);
+                }
+
+                if (ad){
+                    Log.d("有条广告", url);
+                }
+
+                return ad ? new WebResourceResponse(null, null, null) :
+                        super.shouldInterceptRequest(view, url);
             }
         };
 
@@ -409,7 +441,7 @@ public class MainActivity extends AppCompatActivity {
      * @param title
      * @param url
      */
-    private void addBookmarkDialog(Context context,int id, String title, String url) {
+    private void addBookmarkDialog(Context context, int id, String title, String url) {
         AlertDialog.Builder normalDialog = new AlertDialog.Builder(this)
                 .setTitle(title)
                 .setMessage(url)
@@ -472,14 +504,15 @@ public class MainActivity extends AppCompatActivity {
         dialog.setPositiveButton("确认",
                 new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {}
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
                 }
         );
         dialog.show();
     }
 
     //折叠导航栏，相关UI切换
-    private void menuFold(){
+    private void menuFold() {
         findViewById(R.id.menu3).setVisibility(View.INVISIBLE);
         findViewById(R.id.menu2).setVisibility(View.INVISIBLE);
         findViewById(R.id.buttonBack).setVisibility(View.VISIBLE);
@@ -491,7 +524,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //展开导航栏，相关UI切换
-    private void menuUnfold(){
+    private void menuUnfold() {
         findViewById(R.id.buttonBack).setVisibility(View.INVISIBLE);
         findViewById(R.id.buttonForward).setVisibility(View.INVISIBLE);
         findViewById(R.id.buttonHome).setVisibility(View.INVISIBLE);
@@ -500,18 +533,18 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.menu3).setVisibility(View.VISIBLE);
         findViewById(R.id.buttonMore).setVisibility(View.GONE);
         findViewById(R.id.buttonLess).setVisibility(View.VISIBLE);
-        if(invisibleMod){
+        if (invisibleMod) {
             findViewById(R.id.buttonVisibleMod).setVisibility(View.VISIBLE);
             findViewById(R.id.buttonInvisibleMod).setVisibility(View.GONE);
-        }else{
+        } else {
             findViewById(R.id.buttonVisibleMod).setVisibility(View.GONE);
             findViewById(R.id.buttonInvisibleMod).setVisibility(View.VISIBLE);
         }
 
-        if(nightMod){
+        if (nightMod) {
             findViewById(R.id.buttonNightMod).setVisibility(View.GONE);
             findViewById(R.id.buttonDayMod).setVisibility(View.VISIBLE);
-        }else{
+        } else {
             findViewById(R.id.buttonNightMod).setVisibility(View.VISIBLE);
             findViewById(R.id.buttonDayMod).setVisibility(View.GONE);
         }
@@ -520,7 +553,7 @@ public class MainActivity extends AppCompatActivity {
     //夜间模式相关组件初始化，使用css注入实现网页页面的夜间模式
     //css注入代码：
     //webView.loadUrl("javascript:(function() {" + "var parent = document.getElementsByTagName('head').item(0);" + "var style = document.createElement('style');" + "style.type = 'text/css';" + "style.innerHTML = window.atob('" + css + "');" + "parent.appendChild(style)" + "})();");
-    private void initNightMod(){
+    private void initNightMod() {
         InputStream in = getResources().openRawResource(R.raw.night);
         byte[] buffer = new byte[0];
         try {
@@ -541,8 +574,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //夜间模式，相关UI切换
-    private void nightModSwitch(){
-        if(nightMod){
+    private void nightModSwitch() {
+        if (nightMod) {
             findViewById(R.id.buttonDayMod).setVisibility(View.VISIBLE);
             findViewById(R.id.buttonNightMod).setVisibility(View.GONE);
 
@@ -574,7 +607,7 @@ public class MainActivity extends AppCompatActivity {
             findViewById(R.id.url).setBackgroundColor(Color.parseColor("#000000"));
             findViewById(R.id.buttonGoto).setBackgroundColor(Color.parseColor("#000000"));
             topTitle.setTextColor(Color.parseColor("#646464"));
-        }else{
+        } else {
             findViewById(R.id.buttonDayMod).setVisibility(View.GONE);
             findViewById(R.id.buttonNightMod).setVisibility(View.VISIBLE);
 
