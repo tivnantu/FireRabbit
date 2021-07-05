@@ -12,6 +12,8 @@ import android.widget.TextView;
 import androidx.viewpager.widget.ViewPager;
 
 import java.util.ArrayList;
+import java.util.Currency;
+
 import androidx.viewpager.widget.PagerAdapter;
 
 import com.github.chrisbanes.photoview.PhotoView;
@@ -66,8 +68,9 @@ public class ViewPagerActivity extends Activity {
         });
 
         findViewById(R.id.saveTv).setOnClickListener(v -> {
-            DownloadSaveImg.downloadImg(ViewPagerActivity.this,listimg.get(index));
+            DownloadSaveImg.downloadImg(ViewPagerActivity.this, listimg.get(mViewPager.getCurrentItem()));
         });
+//        listimg.get(index)
 
     }
 

@@ -21,6 +21,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Objects;
 import java.util.UUID;
 
 public class DownloadSaveImg {
@@ -83,7 +84,17 @@ public class DownloadSaveImg {
         }
 
         String fileName = UUID.randomUUID().toString() + ".jpg";
+
+//        File externalFileRootDir = context.getExternalFilesDir(null);
+//        do {
+//            Objects.requireNonNull(externalFileRootDir).getParentFile();
+//        } while (Objects.requireNonNull(externalFileRootDir).getAbsolutePath().contains("/Android"));
+//        String saveDir = Objects.requireNonNull(externalFileRootDir).getAbsolutePath();
+//        String savePath = saveDir + "/" + Environment.DIRECTORY_DCIM + "/" + fileName;
+
         File myCaptureFile = new File(Environment.getExternalStorageDirectory().getPath() + "/DCIM/Camera/" + fileName);
+//
+//        File myCaptureFile = new File(savePath);
         BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(myCaptureFile));
         bm.compress(Bitmap.CompressFormat.JPEG, 80, bos);
         bos.flush();
