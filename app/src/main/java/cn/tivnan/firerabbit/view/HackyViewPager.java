@@ -6,13 +6,13 @@ import android.view.MotionEvent;
 
 import androidx.viewpager.widget.ViewPager;
 
-public class HackViewPager extends ViewPager {
+public class HackyViewPager extends ViewPager {
     private boolean isLocked;
-    public HackViewPager(Context context) {
+    public HackyViewPager(Context context) {
         super(context);
         isLocked = false;
     }
-    public HackViewPager(Context context, AttributeSet attrs) {
+    public HackyViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
         isLocked = false;
     }

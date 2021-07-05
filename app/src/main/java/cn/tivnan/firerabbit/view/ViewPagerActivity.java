@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.viewpager.widget.ViewPager;
@@ -16,6 +18,7 @@ import com.github.chrisbanes.photoview.PhotoView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
+import cn.tivnan.firerabbit.MainActivity;
 import cn.tivnan.firerabbit.R;
 //import uk.co.senab.photoview.PhotoView;
 //import com.github.chrisbanes.photoview.PhotoView;
@@ -30,6 +33,7 @@ public class ViewPagerActivity extends Activity {
     ArrayList<String> listimg;
     private int index;
     private int count;
+    private Button crossIv;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,7 +41,7 @@ public class ViewPagerActivity extends Activity {
 
         setContentView(R.layout.activity_view_pager);
 
-        mViewPager = (HackViewPager) findViewById(R.id.view_pager);
+        mViewPager = (HackyViewPager) findViewById(R.id.view_pager);
 //        if(mViewPager.getParent()!=null){
 //            ((ViewGroup) mViewPager.getParent()).removeView(mViewPager);
 //        }
@@ -47,9 +51,31 @@ public class ViewPagerActivity extends Activity {
         listimg = bundle.getStringArrayList("list_image");
         index = bundle.getInt("index");
         count = listimg.size();
+
+//        crossIv = (ImageView) findViewById(R.id.crossIv);
+//        crossIv.setOnClickListener(this);
+
         mViewPager.setAdapter(new SamplePagerAdapter());
         mViewPager.setCurrentItem(index);
+
+        findViewById(R.id.crossIv).setOnClickListener(v -> {
+            finish();
+        });
+
     }
+
+
+//    @Override
+//    public void onClick(View v) {
+//        switch (mViewPager.getId()) {
+//            case R.id.crossIv:
+//                this.finish();
+//
+//            default:
+//                break;
+//        }
+//
+//    }
 
     class SamplePagerAdapter extends PagerAdapter {
         @Override
@@ -83,4 +109,8 @@ public class ViewPagerActivity extends Activity {
             return view == object;
         }
     }
+
+
+
+
 }
