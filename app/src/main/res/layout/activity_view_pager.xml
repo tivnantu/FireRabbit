@@ -21,7 +21,27 @@
    <cn.tivnan.firerabbit.view.HackyViewPager
        android:id="@+id/view_pager"
        android:layout_width="match_parent"
-       android:layout_height="match_parent" >
-   </cn.tivnan.firerabbit.view.HackyViewPager>
+       android:layout_height="match_parent"
+       tools:layout_editor_absoluteX="25dp"
+       tools:layout_editor_absoluteY="16dp"></cn.tivnan.firerabbit.view.HackyViewPager>
+
+   <FrameLayout
+       android:layout_width="match_parent"
+       android:layout_height="match_parent">
+      <TextView
+          android:id="@+id/saveTv"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="bottom|right"
+          android:layout_margin="16dp"
+          android:padding="10dp"
+          android:textSize="16sp"
+          android:text="保存"
+          android:textColor="@color/white"
+          app:layout_constraintTop_toTopOf="parent"
+          app:layout_constraintLeft_toLeftOf="parent"
+          />
+   </FrameLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

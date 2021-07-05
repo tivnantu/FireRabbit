@@ -19,6 +19,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import cn.tivnan.firerabbit.MainActivity;
+import cn.tivnan.firerabbit.util.DownloadSaveImg;
 import cn.tivnan.firerabbit.R;
 //import uk.co.senab.photoview.PhotoView;
 //import com.github.chrisbanes.photoview.PhotoView;
@@ -34,6 +35,8 @@ public class ViewPagerActivity extends Activity {
     private int index;
     private int count;
     private Button crossIv;
+    private TextView saveTv;
+//    private Button saveIv;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,6 +63,10 @@ public class ViewPagerActivity extends Activity {
 
         findViewById(R.id.crossIv).setOnClickListener(v -> {
             finish();
+        });
+
+        findViewById(R.id.saveTv).setOnClickListener(v -> {
+            DownloadSaveImg.downloadImg(ViewPagerActivity.this,listimg.get(index));
         });
 
     }
