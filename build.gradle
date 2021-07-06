@@ -16,6 +16,7 @@ buildscript {
             //gradle-plugin的代理仓库
             url 'https://maven.aliyun.com/repository/gradle-plugin'
         }
+        maven { url "https://www.jitpack.io" }
 //        google()
 //        mavenCentral()
     }
@@ -40,6 +41,7 @@ allprojects {
             //google的代理仓库
             url 'https://maven.aliyun.com/repository/google'
         }
+        maven { url "https://www.jitpack.io" }
 //        google()
 //        mavenCentral()
 //        jcenter() // Warning: this repository is going to shut down soon

@@ -13,8 +13,11 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 import cn.tivnan.firerabbit.R;
+import cn.tivnan.firerabbit.adapter.BookmarkAdapter;
 
 public class TitleLayout extends LinearLayout {//可复用的标题栏
+
+    private TitleLayout.OnMyItemClickListener listener;
 
     public TitleLayout(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -36,5 +39,17 @@ public class TitleLayout extends LinearLayout {//可复用的标题栏
                 ((Activity)getContext()).finish();
             }
         });
+        tv_right.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.myClick(v);
+            }
+        });
+    }
+    public void setOnMyItemClickListener(TitleLayout.OnMyItemClickListener listener) {
+        this.listener = listener;
+    }
+    public interface OnMyItemClickListener {
+        void myClick(View v);
     }
 }

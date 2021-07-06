@@ -42,7 +42,7 @@ public class UserInfoEditActivity extends AppCompatActivity {
                 newPassword = ig_edit_new_password.getContentText();
                 newPasswordCertify = ig_edit_certify_new_password.getContentText();
 
-                if (oldPassword.equals(password)) {//不能用==判断
+                if (oldPassword.equals(password)) {//
                     if (!newPassword.trim().isEmpty()) {
                         if (newPassword.equals(newPasswordCertify)) {
                             //向服务器发送更改用户信息的请求

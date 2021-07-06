@@ -28,7 +28,8 @@ public class HttpUtil {
     private static OkHttpClient client = new OkHttpClient();
 
     //登录
-    public static void loginWithOkHttp(String address, okhttp3.Callback callback) {
+    public static void loginWithOkHttp(String address,
+                                       okhttp3.Callback callback) {
         Request request = new Request.Builder()
                 .url(address)
                 .build();
@@ -94,7 +95,10 @@ public class HttpUtil {
     }
 
     //用户数据同步
-    public static void syncWithOkHttp(String address, List<Bookmark> list, String sessionId, okhttp3.Callback callback) {
+    public static void syncWithOkHttp(String address,
+                                      List<Bookmark> list,
+                                      String sessionId,
+                                      okhttp3.Callback callback) {
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
         try {
@@ -121,7 +125,8 @@ public class HttpUtil {
     }
 
     //退出登录
-    public static void logoutWithOkHttp(String address, String sessionId) {
+    public static void logoutWithOkHttp(String address,
+                                        String sessionId) {
         try {
             Request request = new Request.Builder()
                     .addHeader("cookie", sessionId)
@@ -131,7 +136,17 @@ public class HttpUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
 
+    //删除书签
+    public static void removeBookmarkWithOkHttp(String address,
+                                                String sessionId,
+                                                okhttp3.Callback callback) {
+        Request request = new Request.Builder()
+                .addHeader("cookie", sessionId)
+                .url(address)
+                .build();
+        client.newCall(request).enqueue(callback);
     }
 
 }

@@ -3,8 +3,6 @@ package cn.tivnan.firerabbit.controller;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -94,5 +92,7 @@ public class BookmarkController {
         bookmarkDBHelper.deleteBookmark(bookmarkList.get(pos).getUrl());
         bookmarkList.remove(pos);//别忘了更新bookList中的数据，不执行这一步的话adapter中的bookList不会更新的
     }
-
+    public int getBookmarkId(int pos) {
+        return bookmarkList.get(pos).getId();
+    }
 }

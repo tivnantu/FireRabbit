@@ -7,9 +7,10 @@
     android:orientation="vertical">
 
     <cn.tivnan.firerabbit.view.TitleLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:titlelayout_title="历史"
+        android:id="@+id/history_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titlelayout_title="历史"
         app:titlelayout_right="清空"/>
 
     <androidx.recyclerview.widget.RecyclerView

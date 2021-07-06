@@ -31,6 +31,7 @@ public class HistoryActivity extends AppCompatActivity {
     private List<History> historyList = new ArrayList<>();
     private HistoryController historyController;
     private HistoryAdapter historyAdapter;
+    private TitleLayout titleLayout;
     private RecyclerView historyRecycler;
     private LinearLayoutManager layoutManager;
 
@@ -39,8 +40,39 @@ public class HistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
         initHistories();
+
+        titleLayout.setOnMyItemClickListener(new TitleLayout.OnMyItemClickListener() {
+            @Override
+            public void myClick(View v) {
+                removeAllHistory();
+            }
+        });
+
     }
+    private void removeAllHistory() {
+        //清空之前需要确认
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("您确定清空历史吗？")//设置对话框的标题
+                //设置对话框的按钮
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setPositiveButton("清空", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        historyController.removeAllHistory();
+                        historyList.clear();
+                        historyAdapter.notifyDataSetChanged();
+                    }
+                }).create();
+        dialog.show();
+    }
+
     private void initHistories() {
+        titleLayout = (TitleLayout)findViewById(R.id.history_title);
         historyRecycler = (RecyclerView)findViewById(R.id.history_recycler_view);
         layoutManager = new LinearLayoutManager(this);
         historyRecycler.setLayoutManager(layoutManager);
@@ -55,7 +87,6 @@ public class HistoryActivity extends AppCompatActivity {
             @Override
             public void onItemClick(View v, int pos) {
                 Log.d("onClickItem", String.valueOf(pos));
-
                 Intent intent = new Intent();//没有任何参数（意图），只是用来传递数据
                 intent.putExtra("url", historyList.get(pos).getUrl());
                 setResult(RESULT_OK, intent);
@@ -78,25 +109,7 @@ public class HistoryActivity extends AppCompatActivity {
                                 break;
                             //点击清空历史记录
                             case R.id.deleteAllItem:
-                                //清空之前需要确认
-                                AlertDialog dialog = new AlertDialog.Builder(v.getContext())
-                                        .setTitle("您确定清空历史吗？")//设置对话框的标题
-                                        //设置对话框的按钮
-                                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.dismiss();
-                                            }
-                                        })
-                                        .setPositiveButton("清空", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                historyController.removeAllHistory();
-                                                historyList.clear();
-                                                historyAdapter.notifyDataSetChanged();
-                                            }
-                                        }).create();
-                                dialog.show();
+                                removeAllHistory();
                                 break;
                             //点击复制选中的历史记录url
                             case R.id.copyItemLink:
@@ -134,7 +147,6 @@ public class HistoryActivity extends AppCompatActivity {
                 historyAdapter.notifyItemRemoved(pos);//解决办法2：对于被删掉的位置及其后range大小范围内的view进行重新onBindViewHolder
                 if (pos != historyList.size())
                     historyAdapter.notifyItemRangeChanged(pos,historyList.size() - pos);
-
             }
         });
     }

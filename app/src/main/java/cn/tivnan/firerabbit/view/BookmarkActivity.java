@@ -11,32 +11,38 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import cn.tivnan.firerabbit.adapter.BookmarkAdapter;
 import cn.tivnan.firerabbit.R;
 import cn.tivnan.firerabbit.controller.BookmarkController;
 import cn.tivnan.firerabbit.entity.Bookmark;
+import cn.tivnan.firerabbit.util.HttpUtil;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 public class BookmarkActivity extends AppCompatActivity {
-    //TODO 书签分类，从一个分类移动到另一个分类，清空，搜索，云同步（同步上传、下载、合并逻辑）
-    //TODO 用户管理：1.登录（注册）：手机验证码、用户名密码、相关UI界面，2.账号登出：提供合适的登出入口， 3.账号编辑：头像昵称，4.账号登录：第三方登录（微信、支付宝），多账号管理问题
-
-    //TODO 对网页中的图片进行点击查看，一个网页中有多个图片应该是一个合集，旋转、移动、裁剪、保存。
-    //TODO 视频点击播放、暂停以及恢复，支持3:4，9:16以及全屏播放
-    //TODO 进阶：对图片添加滤镜，对视频进行裁剪
     private List<Bookmark> bookmarkList = new ArrayList<>();
     private BookmarkController bookmarkController;
     private BookmarkAdapter bookmarkAdapter;
     private RecyclerView bookmarkRecycler;
     private LinearLayoutManager layoutManager;
+    private SharedPreferences pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +82,7 @@ public class BookmarkActivity extends AppCompatActivity {
                         switch (item.getItemId()){
                                 //点击删除
                             case R.id.deleteItem:
+                                removeBookmarkFromUser(pos);//通知服务器删除用户账号内保存的书签
                                 bookmarkController.removeBookmarkByUrl(pos);//从数据库中删除
                                 bookmarkAdapter.notifyDataSetChanged();//最后再通知adapter更新页面
                                 break;
@@ -111,21 +118,6 @@ public class BookmarkActivity extends AppCompatActivity {
 
             }
         });
-
-    }
-
-    //加载书签页面
-    private void initBookmarks(){
-        bookmarkRecycler = (RecyclerView)findViewById(R.id.bookmark_recycler_view);
-        layoutManager = new LinearLayoutManager(this);
-        bookmarkRecycler.setLayoutManager(layoutManager);
-
-        //读取书签列表
-        bookmarkController = new BookmarkController(this);
-        bookmarkList = bookmarkController.getBookmarkList();
-
-        bookmarkAdapter = new BookmarkAdapter(bookmarkList);
-        bookmarkRecycler.setAdapter(bookmarkAdapter);
     }
 
     //修改完成后回调此函数，
@@ -157,6 +149,57 @@ public class BookmarkActivity extends AppCompatActivity {
             default:
         }
     }
+
+    private void removeBookmarkFromUser(int pos) {
+        int id = bookmarkController.getBookmarkId(pos);
+        String sessionId = pref.getString("sessionId", "");
+        String address = "http://firerabbit.tivnan.cn/bookmark/delete?id=" + id;
+        HttpUtil.removeBookmarkWithOkHttp(address, sessionId, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(BookmarkActivity.this, "删除失败，请检查网络连接", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String responseData = response.body().string();
+                Gson gson = new Gson();
+                Map map = gson.fromJson(responseData, Map.class);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (map.get("code").equals("200")) {
+                            Toast.makeText(BookmarkActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(BookmarkActivity.this, "删除失败", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    //加载书签页面
+    private void initBookmarks(){
+        bookmarkRecycler = (RecyclerView)findViewById(R.id.bookmark_recycler_view);
+        layoutManager = new LinearLayoutManager(this);
+        bookmarkRecycler.setLayoutManager(layoutManager);
+
+        //读取书签列表
+        bookmarkController = new BookmarkController(this);
+        bookmarkList = bookmarkController.getBookmarkList();
+
+        pref = getSharedPreferences("userInfo", MODE_PRIVATE);
+
+        bookmarkAdapter = new BookmarkAdapter(bookmarkList);
+        bookmarkRecycler.setAdapter(bookmarkAdapter);
+
+    }
+
 //    public boolean onOptionsItemSelected(MenuItem item) {
 //        switch (item.getItemId()) {
 //            case android.R.id.home:
