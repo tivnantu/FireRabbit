@@ -46,6 +46,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import cn.tivnan.firerabbit.controller.BookmarkController;
 import cn.tivnan.firerabbit.controller.HistoryController;
@@ -213,15 +215,24 @@ public class MainActivity extends AppCompatActivity {
 
         //顶部跳转按钮，跳转到目标链接或搜索
         findViewById(R.id.buttonGoto).setOnClickListener(v -> {
+            Pattern website = Pattern.compile("^(((ht|f)tp(s?))\\://)?(www.|[a-zA-Z].)[a-zA-Z0-9\\-\\.]+\\.(com|edu|gov|mil|net|org|biz|info|name|museum|us|ca|uk|cn)(\\:[0-9]+)*(/($|[a-zA-Z0-9\\.\\,\\;\\?\\'\\\\\\+&%\\$#\\=~_\\-]+))*$");
+            //正则表达式匹配网址
             String url = topTitle.getText().toString();
+            Matcher websiteMatch = website.matcher(url);
             if (url.equals(webView.getTitle()))
                 webView.reload();
-            else if (url.startsWith("http://") || url.startsWith("https://"))
-                webView.loadUrl(url);
-            else if (URLUtil.isNetworkUrl("http://" + url) && URLUtil.isValidUrl("http://" + url))
-                webView.loadUrl("http://" + url);
-            else if (URLUtil.isNetworkUrl("https://" + url) && URLUtil.isValidUrl("https://" + url))
-                webView.loadUrl("https://" + url);
+            else if (websiteMatch.matches())
+            {
+                if(url.startsWith("http://") || url.startsWith("https://"))
+                    webView.loadUrl(url);
+                else webView.loadUrl("https://"+url);
+            }
+//            else if (url.startsWith("http://") || url.startsWith("https://"))
+//                webView.loadUrl(url);
+//            else if (URLUtil.isNetworkUrl("http://" + url) && URLUtil.isValidUrl("http://" + url))
+//                webView.loadUrl("http://" + url);
+//            else if (URLUtil.isNetworkUrl("https://" + url) && URLUtil.isValidUrl("https://" + url))
+//                webView.loadUrl("https://" + url);
             else
                 webView.loadUrl("https://cn.bing.com/search?q=" + url);
         });
