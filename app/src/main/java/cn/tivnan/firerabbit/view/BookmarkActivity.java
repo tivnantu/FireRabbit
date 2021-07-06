@@ -43,6 +43,7 @@ public class BookmarkActivity extends AppCompatActivity {
     private RecyclerView bookmarkRecycler;
     private LinearLayoutManager layoutManager;
     private SharedPreferences pref;
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,8 +83,10 @@ public class BookmarkActivity extends AppCompatActivity {
                         switch (item.getItemId()){
                                 //点击删除
                             case R.id.deleteItem:
-                                removeBookmarkFromUser(pos);//通知服务器删除用户账号内保存的书签
-                                bookmarkController.removeBookmarkByUrl(pos);//从数据库中删除
+                                if (pref != null) {//只有在登录的状态下通知服务器
+                                    removeBookmarkFromUser(pos);//通知服务器删除用户账号内保存的书签
+                                }
+                                bookmarkController.removeBookmarkByUrl(pos);//从本地数据库中删除
                                 bookmarkAdapter.notifyDataSetChanged();//最后再通知adapter更新页面
                                 break;
                                 //点击编辑跳转至编辑页面
@@ -104,10 +107,6 @@ public class BookmarkActivity extends AppCompatActivity {
                                     cm.setPrimaryClip(mClipData);
                                     Toast.makeText(v.getContext(), "复制成功", Toast.LENGTH_SHORT).show();
                                     break;
-                                //点击分享选中的书签
-                            case R.id.shareItem:
-
-                                break;
                             default:
                                 break;
                         }
@@ -118,6 +117,49 @@ public class BookmarkActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+
+    private void removeBookmarkFromUser(int pos) {
+        int id = bookmarkController.getBookmarkId(pos);
+        String sessionId = pref.getString("sessionId", "");
+        String address = "http://firerabbit.tivnan.cn/bookmark/delete?id=" + id;
+        HttpUtil.removeBookmarkWithOkHttp(address, sessionId, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(BookmarkActivity.this, "本地删除成功，请连接网络点击云同步删除云端书签", Toast.LENGTH_SHORT).show();
+                        recordBookmarksNeedToBeDeleted(id);
+                    }
+                });
+            }
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String responseData = response.body().string();
+                Gson gson = new Gson();
+                Map map = gson.fromJson(responseData, Map.class);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (map.get("code").equals("200")) {
+                            Toast.makeText(BookmarkActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(BookmarkActivity.this, "本地删除成功，请连接网络点击云同步删除云端书签", Toast.LENGTH_SHORT).show();
+                            //如果同步删除失败，则记录下要删除的书签id，用户下次点击同步时上传删除记录。
+                            recordBookmarksNeedToBeDeleted(id);
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    private void recordBookmarksNeedToBeDeleted(int id) {
+        editor = getSharedPreferences("bookmarksNeedToBeDeleted", MODE_PRIVATE).edit();
+        editor.putString(String.valueOf(System.currentTimeMillis()), String.valueOf(id));
+        editor.apply();
     }
 
     //修改完成后回调此函数，
@@ -150,39 +192,6 @@ public class BookmarkActivity extends AppCompatActivity {
         }
     }
 
-    private void removeBookmarkFromUser(int pos) {
-        int id = bookmarkController.getBookmarkId(pos);
-        String sessionId = pref.getString("sessionId", "");
-        String address = "http://firerabbit.tivnan.cn/bookmark/delete?id=" + id;
-        HttpUtil.removeBookmarkWithOkHttp(address, sessionId, new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(BookmarkActivity.this, "删除失败，请检查网络连接", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                String responseData = response.body().string();
-                Gson gson = new Gson();
-                Map map = gson.fromJson(responseData, Map.class);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (map.get("code").equals("200")) {
-                            Toast.makeText(BookmarkActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(BookmarkActivity.this, "删除失败", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-            }
-        });
-    }
-
     //加载书签页面
     private void initBookmarks(){
         bookmarkRecycler = (RecyclerView)findViewById(R.id.bookmark_recycler_view);
@@ -197,7 +206,6 @@ public class BookmarkActivity extends AppCompatActivity {
 
         bookmarkAdapter = new BookmarkAdapter(bookmarkList);
         bookmarkRecycler.setAdapter(bookmarkAdapter);
-
     }
 
 //    public boolean onOptionsItemSelected(MenuItem item) {

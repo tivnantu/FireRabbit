@@ -24,7 +24,9 @@
 <!--        tools:replace="android:appComponentFactory">-->
 <!--        android:appComponentFactory="aaaaaa"-->
 
-
+        <activity
+            android:name=".view.UserInfoEditActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".view.UserActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -40,8 +42,10 @@
         <activity
             android:name=".view.BookmarkActivity"
             android:theme="@style/AppTheme.NoActionBar"  />
-        <activity android:name=".view.ViewPagerActivity" />
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".view.ViewPagerActivity" />
+        <activity
+            android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

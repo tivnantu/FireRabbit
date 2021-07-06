@@ -121,10 +121,6 @@ public class HistoryActivity extends AppCompatActivity {
                                 cm.setPrimaryClip(mClipData);
                                 Toast.makeText(v.getContext(), "复制成功", Toast.LENGTH_SHORT).show();
                                 break;
-                            //点击分享选中的书签
-                            case R.id.shareItem:
-
-                                break;
                             default:
                                 break;
                         }

@@ -147,12 +147,15 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
     }
 
     private void saveUserInfo(String id, String username, String password, String sessionId) {
-        SharedPreferences.Editor editor = getSharedPreferences("userInfo", MODE_PRIVATE).edit();
-        editor.putString("id", id);
-        editor.putString("username", username);
-        editor.putString("password", password);
-        editor.putString("sessionId", sessionId);
-        editor.apply();
+        SharedPreferences.Editor userInfoEditor = getSharedPreferences("userInfo", MODE_PRIVATE).edit();
+        userInfoEditor.putString("id", id);
+        userInfoEditor.putString("username", username);
+        userInfoEditor.putString("password", password);
+        userInfoEditor.putString("sessionId", sessionId);
+        userInfoEditor.apply();
+        //用于保存书签删除记录的文件
+        SharedPreferences.Editor bookmarkEditor = getSharedPreferences("bookmarksNeedToBeDeleted", MODE_PRIVATE).edit();
+        bookmarkEditor.apply();
     }
 
     private void openUserPage() {

@@ -13,9 +13,6 @@
         android:id="@+id/copyItemLink"
         android:title="复制链接">
     </item>
-    <item
-        android:id="@+id/shareItem"
-        android:title="分享">
-    </item>
+
 
 </menu>

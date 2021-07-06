@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
 
@@ -115,6 +116,16 @@ public class UserInfoEditActivity extends AppCompatActivity {
     private void makeToast(String toast){
         Toast.makeText(this, toast, Toast.LENGTH_SHORT).show();
     }
+
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            openUserPage();
+        }
+        return true;
+    }
+
 
     private void init() {
         ig_edit_username = findViewById(R.id.edit_username_ig);

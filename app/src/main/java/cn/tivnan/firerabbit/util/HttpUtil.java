@@ -94,7 +94,7 @@ public class HttpUtil {
         client.newCall(request).enqueue(callback);
     }
 
-    //用户数据同步
+    //用户数据同步（上传本地书签并接受服务器返回的书签）
     public static void syncWithOkHttp(String address,
                                       List<Bookmark> list,
                                       String sessionId,
