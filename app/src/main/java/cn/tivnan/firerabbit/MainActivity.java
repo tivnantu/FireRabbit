@@ -23,7 +23,6 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.AlphaAnimation;
 import android.webkit.DownloadListener;
-import android.webkit.JavascriptInterface;
 import android.webkit.URLUtil;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
@@ -31,7 +30,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.Toast;
-import android.os.Build.VERSION;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -46,10 +44,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,13 +60,16 @@ public class MainActivity extends AppCompatActivity {
 
     //webView所加载的主页链接
     private final static String HOME_URL = "file:///android_asset/web/mainpage.html";
-    private WebView webView;
     private String URL_NOW;
-    private EditText topTitle;
-    private boolean invisibleMod, nightMod;
     private String css;
-    private AlphaAnimation black500ms;
     private ArrayList<String> listimg;
+    private boolean invisibleMod, nightMod;
+
+    private WebView webView;
+    private EditText topTitle;
+
+    private AlphaAnimation black500ms;
+
     private WebSettings wv;
 
 
@@ -119,6 +116,11 @@ public class MainActivity extends AppCompatActivity {
             if (webView.canGoForward()) {
                 webView.goForward();  //前进前一个页面
             }
+        });
+
+        //刷新按钮，刷新当前网页
+        findViewById(R.id.buttonPages).setOnClickListener(v -> {
+            webView.reload();
         });
 
         //添加书签按钮，将当前页面添加到书签
@@ -296,6 +298,7 @@ public class MainActivity extends AppCompatActivity {
             nightMod = false;
             createDialog("您已退出夜间模式");
             nightModSwitch();
+            webView.reload();
         });
 
         findViewById(R.id.main).getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -459,7 +462,6 @@ public class MainActivity extends AppCompatActivity {
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         webView.loadUrl(HOME_URL);
     }
-
 
     private void addImageListner(){
 

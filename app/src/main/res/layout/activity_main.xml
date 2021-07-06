@@ -311,7 +311,7 @@
                 android:backgroundTint="@color/white"
                 android:gravity="center"
                 android:stateListAnimator="@null"
-                app:icon="@drawable/addmark"
+                app:icon="@drawable/refresh_big"
                 app:iconGravity="textEnd"
                 app:iconTint="#646464" />
 
