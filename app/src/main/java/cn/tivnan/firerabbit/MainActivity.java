@@ -1,5 +1,6 @@
 package cn.tivnan.firerabbit;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -22,6 +23,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.AlphaAnimation;
 import android.webkit.DownloadListener;
+import android.webkit.JavascriptInterface;
 import android.webkit.URLUtil;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
@@ -29,17 +31,27 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.os.Build.VERSION;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
 
 import cn.tivnan.firerabbit.controller.BookmarkController;
 import cn.tivnan.firerabbit.controller.HistoryController;
@@ -48,9 +60,9 @@ import cn.tivnan.firerabbit.view.BookmarkActivity;
 import cn.tivnan.firerabbit.view.HistoryActivity;
 import cn.tivnan.firerabbit.view.LoginOrRegisterActivity;
 import cn.tivnan.firerabbit.view.UserActivity;
+import cn.tivnan.firerabbit.view.ViewPagerActivity;
 
 public class MainActivity extends AppCompatActivity {
-
 
     //webView所加载的主页链接
     private final static String HOME_URL = "file:///android_asset/web/mainpage.html";
@@ -60,10 +72,13 @@ public class MainActivity extends AppCompatActivity {
     private boolean invisibleMod, nightMod;
     private String css;
     private AlphaAnimation black500ms;
+    private ArrayList<String> listimg;
+    private WebSettings wv;
 
 
     @Override
     protected void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        checkPermission();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         AdBlocker.init(this);
@@ -302,8 +317,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+//    @SuppressLint("JavascriptInterface")
+//    @JavascriptInterface
     private void initWebView(WebView webView) {
 
+        listimg = new ArrayList<>();
+        wv = webView.getSettings();
+        wv.setJavaScriptEnabled(true);
+        //绑定javasrcipt接口，imagelistener为接口别名
+        webView.addJavascriptInterface(new JavascriptInterface(this), "imagelistner");
         WebViewClient webClient = new WebViewClient() {
 
             boolean if_load;
@@ -334,6 +356,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
+                addImageListner();
 
                 if (nightMod) {
                     webView.loadUrl("javascript:(function() {" + "var parent = document.getElementsByTagName('head').item(0);" + "var style = document.createElement('style');" + "style.type = 'text/css';" + "style.innerHTML = window.atob('" + css + "');" + "parent.appendChild(style)" + "})();");
@@ -347,9 +370,11 @@ public class MainActivity extends AppCompatActivity {
                         topTitle.setText("欢迎使用FireRabbit！");
                         return;
                     }
+
                     URL_NOW = webView.getUrl();
                     topTitle.setText(view.getTitle());
-                    if (invisibleMod)
+
+                    if(invisibleMod)
                         return;
                     new HistoryController(MainActivity.this).addHistory(view.getTitle(), view.getUrl());
                     if_load = false;
@@ -435,6 +460,49 @@ public class MainActivity extends AppCompatActivity {
         webView.loadUrl(HOME_URL);
     }
 
+
+    private void addImageListner(){
+
+        //遍历页面中所有img的节点，因为节点里面的图片的url即objs[i].src，保存所有图片的src.
+        //为每个图片设置点击事件，objs[i].onclick
+        webView.loadUrl("javascript:(function(){" +
+                "var objs = document.getElementsByTagName(\"img\"); " +
+                "for(var i=0;i<objs.length;i++) " +
+                "{" +
+                "window.imagelistner.readImageUrl(objs[i].src); " +
+                " objs[i].onclick=function() " +
+                " { "+
+                " window.imagelistner.openImage(this.src); " +
+                " } " +
+                "}" +
+                "})()");
+    }
+
+    class JavascriptInterface {
+        private Context context;
+        public JavascriptInterface(Context context) {
+            this.context = context;
+        }
+        @android.webkit.JavascriptInterface
+        public void readImageUrl(String img) { //把所有图片的url保存在ArrayList<String>中
+            listimg.add(img);
+        }
+        @android.webkit.JavascriptInterface //对于targetSdkVersion>=17的，要加这个声明
+        public void openImage(String clickimg)//点击图片所调用到的函数
+        {
+            int index = 0;
+            for(String url:listimg)
+                if(url.equals(clickimg)) index = listimg.indexOf(clickimg);//获取点击图片在整个页面图片中的位置
+            Intent intent = new Intent();
+            Bundle bundle = new Bundle();
+            bundle.putStringArrayList("list_image",listimg);
+            bundle.putInt("index", index);
+            intent.putExtra("bundle", bundle);//将所有图片的url以及点击图片的位置作为参数传给启动的activity
+            intent.setClass(context, ViewPagerActivity.class);
+            context.startActivity(intent);//启动ViewPagerActivity,用于显示图片
+        }
+    }
+
     /**
      * 确认添加标签的对话框
      *
@@ -509,6 +577,53 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
         dialog.show();
+    }
+
+     /**
+     * Android 6.0 动态权限申请
+     */
+    String[] permissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    List<String> mPermissionList = new ArrayList<>();
+
+    // private ImageView welcomeImg = null;
+    private static final int PERMISSION_REQUEST = 1;
+    // 检查权限
+
+    private void checkPermission() {
+        mPermissionList.clear();
+
+        //判断哪些权限未授予
+        for (int i = 0; i < permissions.length; i++) {
+            if (ContextCompat.checkSelfPermission(this, permissions[i]) != PackageManager.PERMISSION_GRANTED) {
+                mPermissionList.add(permissions[i]);
+            }
+        }
+        /**
+         * 判断是否为空
+         */
+        if (mPermissionList.isEmpty()) {//未授予的权限为空，表示都授予了
+
+        } else {//请求权限方法
+            String[] permissions = mPermissionList.toArray(new String[mPermissionList.size()]);//将List转为数组
+            ActivityCompat.requestPermissions(MainActivity.this, permissions, PERMISSION_REQUEST);
+        }
+    }
+
+    /**
+     * 响应授权
+     * 这里不管用户是否拒绝，都进入首页，不再重复申请权限
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case PERMISSION_REQUEST:
+
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+                break;
+        }
     }
 
     //折叠导航栏，相关UI切换
