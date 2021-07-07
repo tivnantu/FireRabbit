@@ -74,7 +74,10 @@ public class AdBlocker {
         if (TextUtils.isEmpty(host)) {
             return false;
         }
+
+
         int index = host.indexOf(".");
+
         return index >= 0 && (AD_HOSTS.contains(host) || index + 1 < host.length() && isAdHost(host.substring(index + 1)));
     }
 

@@ -43,27 +43,24 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
         button_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                makeToast("登陆中...");
-                id = String.valueOf(editText_name.getText());
-                password = String.valueOf(editText_password.getText());
-                String address = "http://firerabbit.tivnan.cn/user/signin" + "?id=" + id + "&password=" + password;
-                loginWithOkHttp(address);
+              loginWithOkHttp();
             }
         });
         button_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                makeToast("注册中...");
-                id = String.valueOf(editText_name.getText());
-                password = String.valueOf(editText_password.getText());
-                String address = "http://firerabbit.tivnan.cn/user/signup";
-                registerWithOkHttp(address, id, password);
+               registerWithOkHttp();
             }
         });
     }
 
     //实现登录
-    public void loginWithOkHttp(String address) {
+    public void loginWithOkHttp() {
+        makeToast("登陆中...");
+        id = String.valueOf(editText_name.getText());
+        password = String.valueOf(editText_password.getText());
+        String address = "http://firerabbit.tivnan.cn/user/signin" + "?id=" + id + "&password=" + password;
+
         HttpUtil.loginWithOkHttp(address, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -108,7 +105,12 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
     }
 
     //实现注册
-    public void registerWithOkHttp(String address, String id, String password) {
+    public void registerWithOkHttp() {
+        makeToast("注册中...");
+        id = String.valueOf(editText_name.getText());
+        password = String.valueOf(editText_password.getText());
+        String address = "http://firerabbit.tivnan.cn/user/signup";
+
         HttpUtil.registerWithOkHttp(address, id, password, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -205,7 +207,7 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
 //                    button_register.setTextColor(Color.parseColor("FF148F"));
                 } else {
 //                    button_login.setTextColor(Color.parseColor("#000000"));
-//                    button_register.setTextColor(Color.parseColor("#000000"));//TODO bug:用户名和密码同时填充时登录/注册界面闪退
+//                    button_register.setTextColor(Color.parseColor("#000000"));
                 }
             }
         });
@@ -214,7 +216,6 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // TODO Auto-generated method stub
                 if (isChecked) {
                     //如果选中，显示密码
                     editText_password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());

@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,17 +45,12 @@ public class BookmarkActivity extends AppCompatActivity {
     private LinearLayoutManager layoutManager;
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
+    private File bookmarkFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bookmark);
-//        //添加标题栏返回按钮
-//        ActionBar actionBar = getSupportActionBar();
-//        if (actionBar != null){
-//            actionBar.setHomeButtonEnabled(true);
-//            actionBar.setDisplayHomeAsUpEnabled(true);
-//        }
 
         initBookmarks();
         //实现点击事件
@@ -83,7 +79,7 @@ public class BookmarkActivity extends AppCompatActivity {
                         switch (item.getItemId()){
                                 //点击删除
                             case R.id.deleteItem:
-                                if (pref != null) {//只有在登录的状态下通知服务器
+                                if (bookmarkFile.exists()) {//只有在登录的状态下通知服务器
                                     removeBookmarkFromUser(pos);//通知服务器删除用户账号内保存的书签
                                 }
                                 bookmarkController.removeBookmarkByUrl(pos);//从本地数据库中删除
@@ -203,6 +199,7 @@ public class BookmarkActivity extends AppCompatActivity {
         bookmarkList = bookmarkController.getBookmarkList();
 
         pref = getSharedPreferences("userInfo", MODE_PRIVATE);
+        bookmarkFile = new File("/data/data/" + getPackageName() + "/shared_prefs/userInfo.xml");
 
         bookmarkAdapter = new BookmarkAdapter(bookmarkList);
         bookmarkRecycler.setAdapter(bookmarkAdapter);
