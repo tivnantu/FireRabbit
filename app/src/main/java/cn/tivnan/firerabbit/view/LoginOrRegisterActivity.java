@@ -60,7 +60,6 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
         id = String.valueOf(editText_name.getText());
         password = String.valueOf(editText_password.getText());
         String address = "http://firerabbit.tivnan.cn/user/signin" + "?id=" + id + "&password=" + password;
-
         HttpUtil.loginWithOkHttp(address, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -110,7 +109,6 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
         id = String.valueOf(editText_name.getText());
         password = String.valueOf(editText_password.getText());
         String address = "http://firerabbit.tivnan.cn/user/signup";
-
         HttpUtil.registerWithOkHttp(address, id, password, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {

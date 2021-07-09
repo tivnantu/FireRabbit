@@ -80,7 +80,6 @@ public class UserActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         //第一步：处理待删除书签
                         deleteRecordedBookmarks();
-
                         //第二步：同步
                         syncUserData();
                     }

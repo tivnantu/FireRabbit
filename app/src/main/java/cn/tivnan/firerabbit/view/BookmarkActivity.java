@@ -198,11 +198,12 @@ public class BookmarkActivity extends AppCompatActivity {
         bookmarkController = new BookmarkController(this);
         bookmarkList = bookmarkController.getBookmarkList();
 
+        bookmarkAdapter = new BookmarkAdapter(bookmarkList);
+        bookmarkRecycler.setAdapter(bookmarkAdapter);
+
         pref = getSharedPreferences("userInfo", MODE_PRIVATE);
         bookmarkFile = new File("/data/data/" + getPackageName() + "/shared_prefs/userInfo.xml");
 
-        bookmarkAdapter = new BookmarkAdapter(bookmarkList);
-        bookmarkRecycler.setAdapter(bookmarkAdapter);
     }
 
 //    public boolean onOptionsItemSelected(MenuItem item) {

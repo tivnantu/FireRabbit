@@ -139,7 +139,6 @@ public class HistoryActivity extends AppCompatActivity {
 //                这样它保留的position一直是未进行删除操作前的position值。
 
 //                historyAdapter.notifyDataSetChanged();//解决办法1：整个列表重新加载
-
                 historyAdapter.notifyItemRemoved(pos);//解决办法2：对于被删掉的位置及其后range大小范围内的view进行重新onBindViewHolder
                 if (pos != historyList.size())
                     historyAdapter.notifyItemRangeChanged(pos,historyList.size() - pos);

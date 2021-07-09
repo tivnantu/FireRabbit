@@ -90,7 +90,7 @@ public class BookmarkController {
     //删除书签
     public void removeBookmarkByUrl(int pos) {
         bookmarkDBHelper.deleteBookmark(bookmarkList.get(pos).getUrl());
-        bookmarkList.remove(pos);//别忘了更新bookList中的数据，不执行这一步的话adapter中的bookList不会更新的
+        bookmarkList.remove(pos);//更新bookList中的数据，不执行这一步的话adapter中的bookList不会更新的
     }
     public int getBookmarkId(int pos) {
         return bookmarkList.get(pos).getId();
